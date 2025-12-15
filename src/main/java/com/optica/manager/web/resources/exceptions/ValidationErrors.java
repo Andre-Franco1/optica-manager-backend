@@ -1,4 +1,4 @@
-package com.optica.manager.web.exceptions;
+package com.optica.manager.web.resources.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;

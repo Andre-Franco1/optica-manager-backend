@@ -29,6 +29,15 @@ public class Client implements Serializable {
     @OneToMany(mappedBy = "client")
     private List<Sale> sales = new ArrayList<>();
 
+    public Client() {
+    }
+
+    public Client(String cpf, String name, String phone) {
+        this.cpf = cpf;
+        this.name = name;
+        this.phone = phone;
+    }
+
     public Long getId() {
         return id;
     }
