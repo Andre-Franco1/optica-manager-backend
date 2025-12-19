@@ -43,6 +43,13 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<Sale> sales = new ArrayList<>();
 
+    public User() {
+    }
+
+    public User(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
