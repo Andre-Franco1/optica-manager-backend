@@ -2,6 +2,7 @@ package com.optica.manager.domain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.optica.manager.domain.entities.Product;
 import com.optica.manager.domain.entities.Sale;
@@ -9,7 +10,7 @@ import com.optica.manager.domain.entities.SaleItem;
 import com.optica.manager.domain.mappers.SaleMapper;
 import com.optica.manager.domain.repositories.ProductRepository;
 import com.optica.manager.domain.repositories.SaleRepository;
-import com.optica.manager.domain.services.usecases.sale.CreateSaleUseCase;
+import com.optica.manager.domain.services.usecases.sale.CreateSaleValidator;
 import com.optica.manager.dto.SaleItemRequest;
 import com.optica.manager.dto.SaleRequest;
 import com.optica.manager.dto.SaleResponse;
@@ -18,7 +19,7 @@ import com.optica.manager.dto.SaleResponse;
 public class SaleService {
 
     @Autowired
-    private CreateSaleUseCase createSaleUseCase;
+    private CreateSaleValidator createSaleUseCase;
 
     @Autowired
     private SaleRepository saleRepository;
@@ -26,9 +27,10 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
     
+    @Transactional
     public SaleResponse createSale(SaleRequest saleRequest) {
 
-        Sale sale = createSaleUseCase.executeUseCase(SaleMapper.fromSaleRequestDTO(saleRequest));
+        Sale sale = createSaleUseCase.validateSale(SaleMapper.fromSaleRequestDTO(saleRequest));
         
         setProductInSaleItem(sale, saleRequest);
         createSaleUseCase.validateSaleItemHasProduct(sale.getSaleItems());

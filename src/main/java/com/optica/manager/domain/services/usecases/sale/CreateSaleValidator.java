@@ -17,7 +17,7 @@ import com.optica.manager.domain.repositories.UserRepository;
 import com.optica.manager.domain.services.exceptions.BusinessException;
 
 @Service
-public class CreateSaleUseCase {
+public class CreateSaleValidator {
 
     @Autowired
     private UserRepository userRepository;
@@ -25,7 +25,7 @@ public class CreateSaleUseCase {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Sale executeUseCase(Sale sale) {
+    public Sale validateSale(Sale sale) {
 
         validateClientExists(sale.getClient().getId());
         validateUserExists(sale.getUser().getId());
