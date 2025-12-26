@@ -34,7 +34,9 @@ public class SaleMapper {
             sale.getInstallments(),
             sale.getComments(),
             sale.getSaleStatus(),
-            new LongDTO(sale.getClient().getId()),
+            sale.getClient().getId(),
+            sale.getClient().getCpf(),
+            sale.getClient().getName(),
             new IntegerDTO(sale.getUser().getId()),
             saleItems
         );

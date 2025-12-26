@@ -19,7 +19,9 @@ public record SaleResponse(
         Integer installments,
         String comments,
         SaleStatus saleStatus,
-        LongDTO client,
+        Long clientId,
+        String clientCpf,
+        String clientName,
         IntegerDTO user,
         List<SaleItemResponse> saleItems) {
 
