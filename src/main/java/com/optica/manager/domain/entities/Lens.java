@@ -1,5 +1,7 @@
 package com.optica.manager.domain.entities;
 
+import java.math.BigDecimal;
+
 import com.optica.manager.domain.enums.LensType;
 
 import jakarta.persistence.Entity;
@@ -15,6 +17,14 @@ public class Lens extends Product {
 
     @Enumerated(EnumType.STRING)
     private LensType lensType;
+
+    public Lens() {
+    }
+    
+    public Lens(String code, String name, BigDecimal costPrice, BigDecimal salePrice, LensType lensType) {
+        super(code, name, costPrice, salePrice);
+        this.lensType = lensType;
+    }
 
     public LensType getLensType() {
         return lensType;
