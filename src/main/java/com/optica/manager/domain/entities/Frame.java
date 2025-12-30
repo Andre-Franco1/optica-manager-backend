@@ -1,5 +1,7 @@
 package com.optica.manager.domain.entities;
 
+import java.math.BigDecimal;
+
 import com.optica.manager.domain.enums.FrameCategory;
 
 import jakarta.persistence.Entity;
@@ -17,6 +19,16 @@ public class Frame extends Product {
     private FrameCategory frameCategory;
 
     private Integer stockQuantity;
+
+    public Frame() {
+    }
+
+    public Frame(String code, String name, BigDecimal costPrice, BigDecimal salePrice, FrameCategory frameCategory,
+            Integer stockQuantity) {
+        super(code, name, costPrice, salePrice);
+        this.frameCategory = frameCategory;
+        this.stockQuantity = stockQuantity;
+    }
 
     public FrameCategory getFrameCategory() {
         return frameCategory;
@@ -36,7 +48,8 @@ public class Frame extends Product {
 
     @Override
     public String toString() {
-        return "Frame [frameCategory=" + frameCategory + ", stockQuantity=" + stockQuantity + " " + super.toString() + "]";
+        return "Frame [frameCategory=" + frameCategory + ", stockQuantity=" + stockQuantity + " " + super.toString()
+                + "]";
     }
 
 }

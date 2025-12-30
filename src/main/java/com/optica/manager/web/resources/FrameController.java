@@ -4,11 +4,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.FrameService;
+import com.optica.manager.dto.FrameRequest;
 import com.optica.manager.dto.FrameResponse;
 
 @RestController
@@ -22,6 +30,35 @@ public class FrameController {
     public ResponseEntity<List<FrameResponse>> getFrames() {
         var frames = frameService.getFrames();
         return ResponseEntity.ok(frames);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<FrameResponse> getFrame(@PathVariable long id) {
+        var frame = frameService.getById(id);
+        return ResponseEntity.ok(frame);
+    }
+
+    @PostMapping
+    public ResponseEntity<FrameResponse> saveFrame(@Validated @RequestBody FrameRequest frameRequest) {
+        var frameResponse = frameService.save(frameRequest);
+
+        var location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(frameResponse.id()).toUri();
+
+        return ResponseEntity.created(location).body(frameResponse);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Void> updateFrame(@PathVariable long id,
+            @Validated @RequestBody FrameRequest frameRequest) {
+        frameService.update(id, frameRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteFrame(@PathVariable long id) {
+        frameService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

@@ -2,11 +2,7 @@ package com.optica.manager.domain.entities;
 
 import java.math.BigDecimal;
 
-import com.optica.manager.domain.enums.ProductType;
-
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,8 +24,15 @@ public abstract class Product {
     private BigDecimal costPrice;
     private BigDecimal salePrice;
 
-    @Enumerated(EnumType.STRING)
-    private ProductType productType;
+    public Product() {
+    }
+
+    public Product(String code, String name, BigDecimal costPrice, BigDecimal salePrice) {
+        this.code = code;
+        this.name = name;
+        this.costPrice = costPrice;
+        this.salePrice = salePrice;
+    }
 
     public Long getId() {
         return id;
@@ -71,14 +74,6 @@ public abstract class Product {
         this.salePrice = salePrice;
     }
 
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -107,7 +102,7 @@ public abstract class Product {
     @Override
     public String toString() {
         return "Product [id=" + id + ", code=" + code + ", name=" + name + ", costPrice=" + costPrice + ", salePrice="
-                + salePrice + ", productType=" + productType + "]";
+                + salePrice + "]";
     }
 
 }
