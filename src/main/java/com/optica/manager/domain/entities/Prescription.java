@@ -40,6 +40,38 @@ public class Prescription implements Serializable {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    public Prescription() {
+    }
+
+    public Prescription(Long id, LocalDate date, BigDecimal od_sphere, BigDecimal od_cylinder, Integer od_axis,
+            BigDecimal os_sphere, BigDecimal os_cylinder, Integer os_axis, BigDecimal addition, String notes,
+            Client client) {
+        this.id = id;
+        this.date = date;
+        this.od_sphere = od_sphere;
+        this.od_cylinder = od_cylinder;
+        this.od_axis = od_axis;
+        this.os_sphere = os_sphere;
+        this.os_cylinder = os_cylinder;
+        this.os_axis = os_axis;
+        this.addition = addition;
+        this.notes = notes;
+        this.client = client;
+    }
+
+    public Prescription(LocalDate date, BigDecimal od_sphere, BigDecimal od_cylinder, Integer od_axis,
+            BigDecimal os_sphere, BigDecimal os_cylinder, Integer os_axis, BigDecimal addition, String notes) {
+        this.date = date;
+        this.od_sphere = od_sphere;
+        this.od_cylinder = od_cylinder;
+        this.od_axis = od_axis;
+        this.os_sphere = os_sphere;
+        this.os_cylinder = os_cylinder;
+        this.os_axis = os_axis;
+        this.addition = addition;
+        this.notes = notes;
+    }
+
     public Long getId() {
         return id;
     }

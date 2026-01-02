@@ -26,3 +26,5 @@ VALUES ('2025-06-26', '2025-06-26', '2025-06-26', 389.90, 'CASH', NULL, 'this is
 
 INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (1, 1 , 150);
 INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (2, 1, 420);
+
+INSERT INTO prescriptions (date, od_sphere, od_cylinder, od_axis, os_sphere, os_cylinder, os_axis, addition, notes, client_id) VALUES ('2025-01-10', -1.25, -0.50, 90, -1.00, -0.25, 80, 2.00, 'Distance and near correction', 1);
