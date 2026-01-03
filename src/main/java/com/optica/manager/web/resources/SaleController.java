@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.SaleService;
-import com.optica.manager.dto.SaleRequest;
-import com.optica.manager.dto.SaleResponse;
+import com.optica.manager.dto.request.SaleRequest;
+import com.optica.manager.dto.response.SaleResponse;
 
 @RestController
 @RequestMapping("sales")

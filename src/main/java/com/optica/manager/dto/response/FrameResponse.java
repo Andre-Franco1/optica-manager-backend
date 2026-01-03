@@ -1,4 +1,4 @@
-package com.optica.manager.dto;
+package com.optica.manager.dto.response;
 
 import java.math.BigDecimal;
 

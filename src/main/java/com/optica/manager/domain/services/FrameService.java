@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.FrameMapper;
 import com.optica.manager.domain.repositories.FrameRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.FrameRequest;
-import com.optica.manager.dto.FrameResponse;
+import com.optica.manager.dto.request.FrameRequest;
+import com.optica.manager.dto.response.FrameResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 

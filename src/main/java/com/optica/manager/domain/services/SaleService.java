@@ -14,9 +14,9 @@ import com.optica.manager.domain.mappers.SaleMapper;
 import com.optica.manager.domain.repositories.ProductRepository;
 import com.optica.manager.domain.repositories.SaleRepository;
 import com.optica.manager.domain.services.usecases.sale.CreateSaleValidator;
-import com.optica.manager.dto.SaleItemRequest;
-import com.optica.manager.dto.SaleRequest;
-import com.optica.manager.dto.SaleResponse;
+import com.optica.manager.dto.request.SaleItemRequest;
+import com.optica.manager.dto.request.SaleRequest;
+import com.optica.manager.dto.response.SaleResponse;
 
 @Service
 public class SaleService {

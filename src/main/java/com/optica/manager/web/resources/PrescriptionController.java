@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.PrescriptionService;
-import com.optica.manager.dto.PrescriptionRequest;
-import com.optica.manager.dto.PrescriptionResponse;
+import com.optica.manager.dto.request.PrescriptionRequest;
+import com.optica.manager.dto.response.PrescriptionResponse;
 
 @RestController
 @RequestMapping("/clients/{clientId}/prescriptions")

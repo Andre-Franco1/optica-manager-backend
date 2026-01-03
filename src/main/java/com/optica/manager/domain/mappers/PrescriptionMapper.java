@@ -1,8 +1,8 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Prescription;
-import com.optica.manager.dto.PrescriptionRequest;
-import com.optica.manager.dto.PrescriptionResponse;
+import com.optica.manager.dto.request.PrescriptionRequest;
+import com.optica.manager.dto.response.PrescriptionResponse;
 
 public class PrescriptionMapper {
 
@@ -11,28 +11,66 @@ public class PrescriptionMapper {
         PrescriptionResponse prescriptionResponse = new PrescriptionResponse(
                 prescription.getId(),
                 prescription.getDate(),
-                prescription.getOd_sphere(),
-                prescription.getOd_cylinder(),
-                prescription.getOd_axis(),
-                prescription.getOs_sphere(),
-                prescription.getOs_cylinder(),
-                prescription.getOs_axis(),
-                prescription.getAddition(),
-                prescription.getNotes(),
-                prescription.getClient().getId());
+                prescription.getDistanceOdSpherical(),
+                prescription.getDistanceOdCylindrical(),
+                prescription.getDistanceOdAxis(),
+                prescription.getDistanceOdDnp(),
+                prescription.getDistanceOdAddition(),
+                prescription.getDistanceOdDp(),
+                prescription.getDistanceOsSpherical(),
+                prescription.getDistanceOsCylindrical(),
+                prescription.getDistanceOsAxis(),
+                prescription.getDistanceOsDnp(),
+                prescription.getDistanceOsAddition(),
+                prescription.getDistanceOsDp(),
+                prescription.getNearOdSpherical(),
+                prescription.getNearOdCylindrical(),
+                prescription.getNearOdAxis(),
+                prescription.getNearOdDnp(),
+                prescription.getNearOdHeight(),
+                prescription.getNearOdDp(),
+                prescription.getNearOsSpherical(),
+                prescription.getNearOsCylindrical(),
+                prescription.getNearOsAxis(),
+                prescription.getNearOsDnp(),
+                prescription.getNearOsHeight(),
+                prescription.getNearOsDp(),
+                prescription.getOphthalmologist().getId(),
+                prescription.getOphthalmologist().getName(),
+                prescription.getClient().getId(),
+                prescription.getNotes()
+                );
         return prescriptionResponse;
     }
 
     public static Prescription fromPrescriptionRequestDTO(PrescriptionRequest prescriptionRequest) {
         return new Prescription(
-            prescriptionRequest.date(),
-            prescriptionRequest.od_sphere(),
-            prescriptionRequest.od_cylinder(),
-            prescriptionRequest.od_axis(),
-            prescriptionRequest.os_sphere(),
-            prescriptionRequest.os_cylinder(),
-            prescriptionRequest.os_axis(),
-            prescriptionRequest.addition(),
-            prescriptionRequest.notes());
+                prescriptionRequest.date(),
+                prescriptionRequest.distanceOdSpherical(),
+                prescriptionRequest.distanceOdCylindrical(),
+                prescriptionRequest.distanceOdAxis(),
+                prescriptionRequest.distanceOdDnp(),
+                prescriptionRequest.distanceOdAddition(),
+                prescriptionRequest.distanceOdDp(),
+                prescriptionRequest.distanceOsSpherical(),
+                prescriptionRequest.distanceOsCylindrical(),
+                prescriptionRequest.distanceOsAxis(),
+                prescriptionRequest.distanceOsDnp(),
+                prescriptionRequest.distanceOsAddition(),
+                prescriptionRequest.distanceOsDp(),
+                prescriptionRequest.nearOdSpherical(),
+                prescriptionRequest.nearOdCylindrical(),
+                prescriptionRequest.nearOdAxis(),
+                prescriptionRequest.nearOdDnp(),
+                prescriptionRequest.nearOdHeight(),
+                prescriptionRequest.nearOdDp(),
+                prescriptionRequest.nearOsSpherical(),
+                prescriptionRequest.nearOsCylindrical(),
+                prescriptionRequest.nearOsAxis(),
+                prescriptionRequest.nearOsDnp(),
+                prescriptionRequest.nearOsHeight(),
+                prescriptionRequest.nearOsDp(),
+                prescriptionRequest.notes());
+
     }
 }

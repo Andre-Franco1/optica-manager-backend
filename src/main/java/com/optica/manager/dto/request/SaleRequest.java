@@ -1,4 +1,4 @@
-package com.optica.manager.dto;
+package com.optica.manager.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -7,9 +7,10 @@ import java.util.List;
 import com.optica.manager.domain.enums.CardBrand;
 import com.optica.manager.domain.enums.PaymentMethod;
 import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.dto.IntegerDTO;
+import com.optica.manager.dto.LongDTO;
 
-public record SaleResponse(
-        long id,
+public record SaleRequest(
         LocalDate issueDate,
         LocalDate estimatedDeliveryDate,
         LocalDate deliveryDate,
@@ -19,10 +20,8 @@ public record SaleResponse(
         Integer installments,
         String comments,
         SaleStatus saleStatus,
-        Long clientId,
-        String clientCpf,
-        String clientName,
+        LongDTO client,
         IntegerDTO user,
-        List<SaleItemResponse> saleItems) {
+        List<SaleItemRequest> saleItems) {
 
 }

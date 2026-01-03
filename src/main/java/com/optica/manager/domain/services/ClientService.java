@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.ClientMapper;
 import com.optica.manager.domain.repositories.ClientRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.ClientRequest;
-import com.optica.manager.dto.ClientResponse;
+import com.optica.manager.dto.request.ClientRequest;
+import com.optica.manager.dto.response.ClientResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
