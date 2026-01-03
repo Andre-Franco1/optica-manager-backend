@@ -24,21 +24,81 @@ public class Prescription implements Serializable {
     @Column(nullable = false)
     private LocalDate date;
 
-    private BigDecimal od_sphere;
-    private BigDecimal od_cylinder;
-    private Integer od_axis;
+    private BigDecimal distanceOdSpherical;
+    private BigDecimal distanceOdCylindrical;
+    private Integer distanceOdAxis;
+    private BigDecimal distanceOdDnp;
+    private BigDecimal distanceOdAddition;
+    private BigDecimal distanceOdDp;
 
-    private BigDecimal os_sphere;
-    private BigDecimal os_cylinder;
-    private Integer os_axis;
+    private BigDecimal distanceOsSpherical;
+    private BigDecimal distanceOsCylindrical;
+    private Integer distanceOsAxis;
+    private BigDecimal distanceOsDnp;
+    private BigDecimal distanceOsAddition;
+    private BigDecimal distanceOsDp;
 
-    private BigDecimal addition;
+    private BigDecimal nearOdSpherical;
+    private BigDecimal nearOdCylindrical;
+    private Integer nearOdAxis;
+    private BigDecimal nearOdDnp;
+    private BigDecimal nearOdHeight;
+    private BigDecimal nearOdDp;
+
+    private BigDecimal nearOsSpherical;
+    private BigDecimal nearOsCylindrical;
+    private Integer nearOsAxis;
+    private BigDecimal nearOsDnp;
+    private BigDecimal nearOsHeight;
+    private BigDecimal nearOsDp;
 
     private String notes;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "ophthalmologist_id", nullable = false)
+    private Ophthalmologist ophthalmologist;
+
+    public Prescription() {
+    }
+
+    public Prescription(LocalDate date, BigDecimal distanceOdSpherical, BigDecimal distanceOdCylindrical,
+            Integer distanceOdAxis, BigDecimal distanceOdDnp, BigDecimal distanceOdAddition, BigDecimal distanceOdDp,
+            BigDecimal distanceOsSpherical, BigDecimal distanceOsCylindrical, Integer distanceOsAxis,
+            BigDecimal distanceOsDnp, BigDecimal distanceOsAddition, BigDecimal distanceOsDp,
+            BigDecimal nearOdSpherical, BigDecimal nearOdCylindrical, Integer nearOdAxis, BigDecimal nearOdDnp,
+            BigDecimal nearOdHeight, BigDecimal nearOdDp, BigDecimal nearOsSpherical, BigDecimal nearOsCylindrical,
+            Integer nearOsAxis, BigDecimal nearOsDnp, BigDecimal nearOsHeight, BigDecimal nearOsDp, String notes) {
+        this.date = date;
+        this.distanceOdSpherical = distanceOdSpherical;
+        this.distanceOdCylindrical = distanceOdCylindrical;
+        this.distanceOdAxis = distanceOdAxis;
+        this.distanceOdDnp = distanceOdDnp;
+        this.distanceOdAddition = distanceOdAddition;
+        this.distanceOdDp = distanceOdDp;
+        this.distanceOsSpherical = distanceOsSpherical;
+        this.distanceOsCylindrical = distanceOsCylindrical;
+        this.distanceOsAxis = distanceOsAxis;
+        this.distanceOsDnp = distanceOsDnp;
+        this.distanceOsAddition = distanceOsAddition;
+        this.distanceOsDp = distanceOsDp;
+        this.nearOdSpherical = nearOdSpherical;
+        this.nearOdCylindrical = nearOdCylindrical;
+        this.nearOdAxis = nearOdAxis;
+        this.nearOdDnp = nearOdDnp;
+        this.nearOdHeight = nearOdHeight;
+        this.nearOdDp = nearOdDp;
+        this.nearOsSpherical = nearOsSpherical;
+        this.nearOsCylindrical = nearOsCylindrical;
+        this.nearOsAxis = nearOsAxis;
+        this.nearOsDnp = nearOsDnp;
+        this.nearOsHeight = nearOsHeight;
+        this.nearOsDp = nearOsDp;
+        this.notes = notes;
+    }
 
     public Long getId() {
         return id;
@@ -56,60 +116,196 @@ public class Prescription implements Serializable {
         this.date = date;
     }
 
-    public BigDecimal getOd_sphere() {
-        return od_sphere;
+    public BigDecimal getDistanceOdSpherical() {
+        return distanceOdSpherical;
     }
 
-    public void setOd_sphere(BigDecimal od_sphere) {
-        this.od_sphere = od_sphere;
+    public void setDistanceOdSpherical(BigDecimal distanceOdSpherical) {
+        this.distanceOdSpherical = distanceOdSpherical;
     }
 
-    public BigDecimal getOd_cylinder() {
-        return od_cylinder;
+    public BigDecimal getDistanceOdCylindrical() {
+        return distanceOdCylindrical;
     }
 
-    public void setOd_cylinder(BigDecimal od_cylinder) {
-        this.od_cylinder = od_cylinder;
+    public void setDistanceOdCylindrical(BigDecimal distanceOdCylindrical) {
+        this.distanceOdCylindrical = distanceOdCylindrical;
     }
 
-    public Integer getOd_axis() {
-        return od_axis;
+    public Integer getDistanceOdAxis() {
+        return distanceOdAxis;
     }
 
-    public void setOd_axis(Integer od_axis) {
-        this.od_axis = od_axis;
+    public void setDistanceOdAxis(Integer distanceOdAxis) {
+        this.distanceOdAxis = distanceOdAxis;
     }
 
-    public BigDecimal getOs_sphere() {
-        return os_sphere;
+    public BigDecimal getDistanceOdDnp() {
+        return distanceOdDnp;
     }
 
-    public void setOs_sphere(BigDecimal os_sphere) {
-        this.os_sphere = os_sphere;
+    public void setDistanceOdDnp(BigDecimal distanceOdDnp) {
+        this.distanceOdDnp = distanceOdDnp;
     }
 
-    public BigDecimal getOs_cylinder() {
-        return os_cylinder;
+    public BigDecimal getDistanceOdAddition() {
+        return distanceOdAddition;
     }
 
-    public void setOs_cylinder(BigDecimal os_cylinder) {
-        this.os_cylinder = os_cylinder;
+    public void setDistanceOdAddition(BigDecimal distanceOdAddition) {
+        this.distanceOdAddition = distanceOdAddition;
     }
 
-    public Integer getOs_axis() {
-        return os_axis;
+    public BigDecimal getDistanceOdDp() {
+        return distanceOdDp;
     }
 
-    public void setOs_axis(Integer os_axis) {
-        this.os_axis = os_axis;
+    public void setDistanceOdDp(BigDecimal distanceOdDp) {
+        this.distanceOdDp = distanceOdDp;
     }
 
-    public BigDecimal getAddition() {
-        return addition;
+    public BigDecimal getDistanceOsSpherical() {
+        return distanceOsSpherical;
     }
 
-    public void setAddition(BigDecimal addition) {
-        this.addition = addition;
+    public void setDistanceOsSpherical(BigDecimal distanceOsSpherical) {
+        this.distanceOsSpherical = distanceOsSpherical;
+    }
+
+    public BigDecimal getDistanceOsCylindrical() {
+        return distanceOsCylindrical;
+    }
+
+    public void setDistanceOsCylindrical(BigDecimal distanceOsCylindrical) {
+        this.distanceOsCylindrical = distanceOsCylindrical;
+    }
+
+    public Integer getDistanceOsAxis() {
+        return distanceOsAxis;
+    }
+
+    public void setDistanceOsAxis(Integer distanceOsAxis) {
+        this.distanceOsAxis = distanceOsAxis;
+    }
+
+    public BigDecimal getDistanceOsDnp() {
+        return distanceOsDnp;
+    }
+
+    public void setDistanceOsDnp(BigDecimal distanceOsDnp) {
+        this.distanceOsDnp = distanceOsDnp;
+    }
+
+    public BigDecimal getDistanceOsAddition() {
+        return distanceOsAddition;
+    }
+
+    public void setDistanceOsAddition(BigDecimal distanceOsAddition) {
+        this.distanceOsAddition = distanceOsAddition;
+    }
+
+    public BigDecimal getDistanceOsDp() {
+        return distanceOsDp;
+    }
+
+    public void setDistanceOsDp(BigDecimal distanceOsDp) {
+        this.distanceOsDp = distanceOsDp;
+    }
+
+    public BigDecimal getNearOdSpherical() {
+        return nearOdSpherical;
+    }
+
+    public void setNearOdSpherical(BigDecimal nearOdSpherical) {
+        this.nearOdSpherical = nearOdSpherical;
+    }
+
+    public BigDecimal getNearOdCylindrical() {
+        return nearOdCylindrical;
+    }
+
+    public void setNearOdCylindrical(BigDecimal nearOdCylindrical) {
+        this.nearOdCylindrical = nearOdCylindrical;
+    }
+
+    public Integer getNearOdAxis() {
+        return nearOdAxis;
+    }
+
+    public void setNearOdAxis(Integer nearOdAxis) {
+        this.nearOdAxis = nearOdAxis;
+    }
+
+    public BigDecimal getNearOdDnp() {
+        return nearOdDnp;
+    }
+
+    public void setNearOdDnp(BigDecimal nearOdDnp) {
+        this.nearOdDnp = nearOdDnp;
+    }
+
+    public BigDecimal getNearOdHeight() {
+        return nearOdHeight;
+    }
+
+    public void setNearOdHeight(BigDecimal nearOdHeight) {
+        this.nearOdHeight = nearOdHeight;
+    }
+
+    public BigDecimal getNearOdDp() {
+        return nearOdDp;
+    }
+
+    public void setNearOdDp(BigDecimal nearOdDp) {
+        this.nearOdDp = nearOdDp;
+    }
+
+    public BigDecimal getNearOsSpherical() {
+        return nearOsSpherical;
+    }
+
+    public void setNearOsSpherical(BigDecimal nearOsSpherical) {
+        this.nearOsSpherical = nearOsSpherical;
+    }
+
+    public BigDecimal getNearOsCylindrical() {
+        return nearOsCylindrical;
+    }
+
+    public void setNearOsCylindrical(BigDecimal nearOsCylindrical) {
+        this.nearOsCylindrical = nearOsCylindrical;
+    }
+
+    public Integer getNearOsAxis() {
+        return nearOsAxis;
+    }
+
+    public void setNearOsAxis(Integer nearOsAxis) {
+        this.nearOsAxis = nearOsAxis;
+    }
+
+    public BigDecimal getNearOsDnp() {
+        return nearOsDnp;
+    }
+
+    public void setNearOsDnp(BigDecimal nearOsDnp) {
+        this.nearOsDnp = nearOsDnp;
+    }
+
+    public BigDecimal getNearOsHeight() {
+        return nearOsHeight;
+    }
+
+    public void setNearOsHeight(BigDecimal nearOsHeight) {
+        this.nearOsHeight = nearOsHeight;
+    }
+
+    public BigDecimal getNearOsDp() {
+        return nearOsDp;
+    }
+
+    public void setNearOsDp(BigDecimal nearOsDp) {
+        this.nearOsDp = nearOsDp;
     }
 
     public String getNotes() {
@@ -126,6 +322,14 @@ public class Prescription implements Serializable {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Ophthalmologist getOphthalmologist() {
+        return ophthalmologist;
+    }
+
+    public void setOphthalmologist(Ophthalmologist ophthalmologist) {
+        this.ophthalmologist = ophthalmologist;
     }
 
     @Override
@@ -151,13 +355,6 @@ public class Prescription implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Prescription [id=" + id + ", date=" + date + ", od_sphere=" + od_sphere + ", od_cylinder=" + od_cylinder
-                + ", od_axis=" + od_axis + ", os_sphere=" + os_sphere + ", os_cylinder=" + os_cylinder + ", os_axis="
-                + os_axis + ", addition=" + addition + ", notes=" + notes + "]";
     }
 
 }

@@ -10,9 +10,9 @@ import com.optica.manager.domain.entities.SaleItem;
 import com.optica.manager.domain.entities.User;
 import com.optica.manager.dto.IntegerDTO;
 import com.optica.manager.dto.LongDTO;
-import com.optica.manager.dto.SaleItemResponse;
-import com.optica.manager.dto.SaleRequest;
-import com.optica.manager.dto.SaleResponse;
+import com.optica.manager.dto.request.SaleRequest;
+import com.optica.manager.dto.response.SaleItemResponse;
+import com.optica.manager.dto.response.SaleResponse;
 
 public class SaleMapper {
 

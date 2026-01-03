@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.LensMapper;
 import com.optica.manager.domain.repositories.LensRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.LensRequest;
-import com.optica.manager.dto.LensResponse;
+import com.optica.manager.dto.request.LensRequest;
+import com.optica.manager.dto.response.LensResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.FrameService;
-import com.optica.manager.dto.FrameRequest;
-import com.optica.manager.dto.FrameResponse;
+import com.optica.manager.dto.request.FrameRequest;
+import com.optica.manager.dto.response.FrameResponse;
 
 @RestController
 @RequestMapping("frames")

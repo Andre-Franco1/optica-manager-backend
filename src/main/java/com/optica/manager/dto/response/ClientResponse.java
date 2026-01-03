@@ -1,4 +1,4 @@
-package com.optica.manager.dto;
+package com.optica.manager.dto.response;
 
 public record ClientResponse(
         Long id,

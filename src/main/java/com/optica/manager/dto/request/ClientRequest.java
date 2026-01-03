@@ -1,4 +1,4 @@
-package com.optica.manager.dto;
+package com.optica.manager.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
