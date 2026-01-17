@@ -1,7 +1,5 @@
 package com.optica.manager.domain.entities;
 
-import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,17 +19,13 @@ public abstract class Product {
 
     private String code;
     private String name;
-    private BigDecimal costPrice;
-    private BigDecimal salePrice;
 
     public Product() {
     }
 
-    public Product(String code, String name, BigDecimal costPrice, BigDecimal salePrice) {
+    public Product(String code, String name) {
         this.code = code;
         this.name = name;
-        this.costPrice = costPrice;
-        this.salePrice = salePrice;
     }
 
     public Long getId() {
@@ -56,22 +50,6 @@ public abstract class Product {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public BigDecimal getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(BigDecimal costPrice) {
-        this.costPrice = costPrice;
-    }
-
-    public BigDecimal getSalePrice() {
-        return salePrice;
-    }
-
-    public void setSalePrice(BigDecimal salePrice) {
-        this.salePrice = salePrice;
     }
 
     @Override
@@ -101,8 +79,7 @@ public abstract class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", code=" + code + ", name=" + name + ", costPrice=" + costPrice + ", salePrice="
-                + salePrice + "]";
+        return "Product [id=" + id + ", code=" + code + ", name=" + name + "]";
     }
 
 }

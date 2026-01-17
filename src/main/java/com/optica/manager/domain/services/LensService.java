@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,13 @@ public class LensService {
     
     @Autowired
     private LensRepository lensRepository;
+
+    @Transactional(readOnly = true)
+    public Page<LensResponse> findByNameContainingIgnoreCase(String name, int page, int size) {
+        var pageRequest = PageRequest.of(page, size);
+        var pageLens = lensRepository.findByNameContainingIgnoreCase(name, pageRequest);
+        return pageLens.map(l -> LensMapper.toLensResponseDTO(l));
+    }
 
     @Transactional(readOnly = true)
     public List<LensResponse> getLenses() {
@@ -48,10 +57,12 @@ public class LensService {
 
             lens.setCode(lensRequest.code());
             lens.setName(lensRequest.name());
-            lens.setCostPrice(lensRequest.costPrice());
-            lens.setSalePrice(lensRequest.salePrice());
-            lens.setLensType(lensRequest.lensType());
-
+            lens.setBrand(lensRequest.brand());
+            lens.setType(lensRequest.type());
+            lens.setIndex(lensRequest.index());
+            lens.setMaterial(lensRequest.material());
+            lens.setTreatments(lensRequest.treatments());
+            
             lensRepository.save(lens);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Lente não encontrada.");
