@@ -31,9 +31,9 @@ public class SaleService {
     private ProductRepository productRepository;
 
     @Transactional(readOnly = true)
-    public Page<SaleResponse> findPendingSales(int page, int size) {
+    public Page<SaleResponse> findSales(int page, int size, SaleStatus status) {
         var pageRequest = PageRequest.of(page, size);
-        var pageSale = saleRepository.findAllBySaleStatus(SaleStatus.PENDING, pageRequest);
+        var pageSale = saleRepository.findAllBySaleStatus(status, pageRequest);
         return pageSale.map(s -> SaleMapper.toSaleResponseDTO(s));
     }
     

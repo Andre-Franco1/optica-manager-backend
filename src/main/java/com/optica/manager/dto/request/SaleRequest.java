@@ -21,6 +21,7 @@ public record SaleRequest(
         String comments,
         SaleStatus saleStatus,
         LongDTO client,
+        Long prescriptionId,
         IntegerDTO user,
         List<SaleItemRequest> saleItems) {
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 
 import com.optica.manager.domain.entities.Client;
+import com.optica.manager.domain.entities.Prescription;
 import com.optica.manager.domain.entities.Sale;
 import com.optica.manager.domain.entities.SaleItem;
 import com.optica.manager.domain.entities.User;
@@ -47,6 +48,12 @@ public class SaleMapper {
         Sale sale = new Sale();
 
         BeanUtils.copyProperties(saleRequest, sale);
+        if (saleRequest.prescriptionId() != null) {
+            sale.setPrescription(new Prescription(saleRequest.prescriptionId()));
+        } else {
+            sale.setPrescription(null);
+        }
+        
         sale.setClient(new Client(saleRequest.client().id()));
         sale.setUser(new User(saleRequest.user().id()));
         
