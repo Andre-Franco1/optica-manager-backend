@@ -13,6 +13,7 @@ import com.optica.manager.domain.enums.SaleStatus;
 import com.optica.manager.domain.mappers.SaleMapper;
 import com.optica.manager.domain.repositories.ProductRepository;
 import com.optica.manager.domain.repositories.SaleRepository;
+import com.optica.manager.domain.services.exceptions.BusinessException;
 import com.optica.manager.domain.services.usecases.sale.CreateSaleValidator;
 import com.optica.manager.dto.request.SaleItemRequest;
 import com.optica.manager.dto.request.SaleRequest;
@@ -23,6 +24,9 @@ public class SaleService {
 
     @Autowired
     private CreateSaleValidator createSaleUseCase;
+
+    @Autowired
+    private StockMovementService stockMovementService;
 
     @Autowired
     private SaleRepository saleRepository;
@@ -36,7 +40,7 @@ public class SaleService {
         var pageSale = saleRepository.findAllBySaleStatus(status, pageRequest);
         return pageSale.map(s -> SaleMapper.toSaleResponseDTO(s));
     }
-    
+
     @Transactional
     public SaleResponse createSale(SaleRequest saleRequest) {
 
@@ -45,16 +49,22 @@ public class SaleService {
         setProductInSaleItem(sale, saleRequest);
         createSaleUseCase.validateSaleItemHasProduct(sale.getSaleItems());
 
+        for (SaleItem saleItem : sale.getSaleItems()) {
+            stockMovementService.decreaseStockInSale(saleItem.getProduct(), 1);
+        }
+
         saleRepository.save(sale);
         return SaleMapper.toSaleResponseDTO(sale);
     }
 
-    private void setProductInSaleItem(Sale sale, SaleRequest saleRequest){
-        for (int i = 0; i < sale.getSaleItems().size(); i++){
+    private void setProductInSaleItem(Sale sale, SaleRequest saleRequest) {
+        for (int i = 0; i < sale.getSaleItems().size(); i++) {
             SaleItem saleItem = sale.getSaleItems().get(i);
             SaleItemRequest saleItemReq = saleRequest.saleItems().get(i);
 
-            Product product = productRepository.getReferenceById(saleItemReq.product().id());
+            Product product = productRepository.findById(saleItemReq.product().id())
+                .orElseThrow(() -> new BusinessException("Produto não encontrado"));
+
             saleItem.setProduct(product);
         }
     }

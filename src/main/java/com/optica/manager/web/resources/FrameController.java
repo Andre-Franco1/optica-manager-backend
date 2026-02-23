@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.FrameService;
+import com.optica.manager.domain.services.StockMovementService;
 import com.optica.manager.dto.request.FrameRequest;
+import com.optica.manager.dto.request.StockRequest;
 import com.optica.manager.dto.response.FrameResponse;
 
 @RestController
@@ -27,6 +29,9 @@ public class FrameController {
 
     @Autowired
     private FrameService frameService;
+
+    @Autowired
+    private StockMovementService stockMovementService;
 
     @GetMapping(params = {"page", "limit"})
     public ResponseEntity<Page<FrameResponse>> getFramesPage(
@@ -69,6 +74,18 @@ public class FrameController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteFrame(@PathVariable long id) {
         frameService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{id}/stock/entry")
+    public ResponseEntity<Void> increaseStock(@PathVariable Long id, @RequestBody StockRequest request) {
+        stockMovementService.increaseStock(id, request.quantity());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{id}/stock/exit")
+    public ResponseEntity<Void> decreaseStock(@PathVariable Long id, @RequestBody StockRequest request) {
+        stockMovementService.decreaseStock(id, request.quantity());
         return ResponseEntity.noContent().build();
     }
     
