@@ -6,15 +6,17 @@ import com.optica.manager.dto.response.LensResponse;
 
 public class LensMapper {
     public static LensResponse toLensResponseDTO(Lens lens) {
-        return new LensResponse(lens.getId(), lens.getCode(), lens.getName(), lens.getCostPrice(), lens.getSalePrice(), lens.getLensType());
+        return new LensResponse(lens.getId(), lens.getCode(), lens.getName(), lens.getBrand(), lens.getIndex(), lens.getMaterial(), lens.getTreatments(), lens.getType());
     }
 
     public static Lens fromLensRequestDTO(LensRequest lensRequest) {
         return new Lens(
                 lensRequest.code(),
                 lensRequest.name(),
-                lensRequest.costPrice(),
-                lensRequest.salePrice(),
-                lensRequest.lensType());
+                lensRequest.brand(),
+                lensRequest.index(),
+                lensRequest.material(),
+                lensRequest.treatments(),
+                lensRequest.type());
     }
 }

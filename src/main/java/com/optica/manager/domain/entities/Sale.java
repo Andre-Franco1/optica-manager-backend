@@ -53,12 +53,18 @@ public class Sale implements Serializable {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "prescription_id", nullable = true)
+    private Prescription prescription;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleItem> saleItems = new ArrayList<>();
+
+
 
     public Long getId() {
         return id;
@@ -148,6 +154,14 @@ public class Sale implements Serializable {
         this.client = client;
     }
 
+    public Prescription getPrescription() {
+        return prescription;
+    }
+
+    public void setPrescription(Prescription prescription) {
+        this.prescription = prescription;
+    }
+
     public User getUser() {
         return user;
     }
@@ -165,9 +179,9 @@ public class Sale implements Serializable {
     }
 
     public void addSaleItem(SaleItem saleItem) {
-    saleItems.add(saleItem);
-    saleItem.setSale(this);
-}
+        saleItems.add(saleItem);
+        saleItem.setSale(this);
+    }
 
     @Override
     public int hashCode() {

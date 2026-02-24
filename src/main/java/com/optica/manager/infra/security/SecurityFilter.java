@@ -1,7 +1,5 @@
 package com.optica.manager.infra.security;
 
-
-
 import java.io.IOException;
 import java.util.Collections;
 
@@ -22,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-    
+
     @Autowired
     TokenService tokenService;
 
@@ -35,8 +33,16 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         var login = tokenService.validateToken(token);
 
+        //TODO
+        String path = request.getRequestURI();
+        if (path.startsWith("/h2-console")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (login != null) {
-            User user = userRepository.findByEmail(login).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+            User user = userRepository.findByEmail(login)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
             var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,13 @@ public class FrameService {
     private FrameRepository frameRepository;
 
     @Transactional(readOnly = true)
+    public Page<FrameResponse> findByNameContainingIgnoreCase(String name, int page, int size) {
+        var pageRequest = PageRequest.of(page, size);
+        var pageFrame = frameRepository.findByNameContainingIgnoreCase(name, pageRequest);
+        return pageFrame.map(f -> FrameMapper.toFrameResponseDTO(f));
+    }
+
+    @Transactional(readOnly = true)
     public List<FrameResponse> getFrames() {
         var frames = frameRepository.findAll();
         return frames.stream().map(f -> FrameMapper.toFrameResponseDTO(f)).collect(Collectors.toList());
@@ -37,6 +46,7 @@ public class FrameService {
     @Transactional
     public FrameResponse save(FrameRequest frameRequest) {
         var frame = frameRepository.save(FrameMapper.fromFrameRequestDTO(frameRequest));
+        frame.setStockQuantity(0);
         return FrameMapper.toFrameResponseDTO(frame);
     }
 
@@ -48,9 +58,8 @@ public class FrameService {
 
             frame.setCode(frameRequest.code());
             frame.setName(frameRequest.name());
-            frame.setCostPrice(frameRequest.costPrice());
-            frame.setSalePrice(frameRequest.salePrice());
-            frame.setFrameCategory(frameRequest.frameCategory());
+            frame.setBrand(frameRequest.brand());
+            frame.setType(frameRequest.type());
 
             frameRepository.save(frame);
         } catch (EntityNotFoundException e) {

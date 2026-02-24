@@ -1,6 +1,6 @@
 package com.optica.manager.domain.enums;
 
-public enum FrameCategory {
+public enum FrameType {
     PRESCRIPTION,
     SUNGLASS
 }

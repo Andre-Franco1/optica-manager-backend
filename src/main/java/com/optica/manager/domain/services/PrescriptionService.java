@@ -72,25 +72,23 @@ public class PrescriptionService {
         prescription.setDistanceOdAxis(prescriptionRequest.distanceOdAxis());
         prescription.setDistanceOdDnp(prescriptionRequest.distanceOdDnp());
         prescription.setDistanceOdAddition(prescriptionRequest.distanceOdAddition());
-        prescription.setDistanceOdDp(prescriptionRequest.distanceOdDp());
+        prescription.setDistanceDp(prescriptionRequest.distanceDp());
         prescription.setDistanceOsSpherical(prescriptionRequest.distanceOsSpherical());
         prescription.setDistanceOsCylindrical(prescriptionRequest.distanceOsCylindrical());
         prescription.setDistanceOsAxis(prescriptionRequest.distanceOsAxis());
         prescription.setDistanceOsDnp(prescriptionRequest.distanceOsDnp());
         prescription.setDistanceOsAddition(prescriptionRequest.distanceOsAddition());
-        prescription.setDistanceOsDp(prescriptionRequest.distanceOsDp());
         prescription.setNearOdSpherical(prescriptionRequest.nearOdSpherical());
         prescription.setNearOdCylindrical(prescriptionRequest.nearOdCylindrical());
         prescription.setNearOdAxis(prescriptionRequest.nearOdAxis());
         prescription.setNearOdDnp(prescriptionRequest.nearOdDnp());
         prescription.setNearOdHeight(prescriptionRequest.nearOdHeight());
-        prescription.setNearOdDp(prescriptionRequest.nearOdDp());
+        prescription.setNearDp(prescriptionRequest.nearDp());
         prescription.setNearOsSpherical(prescriptionRequest.nearOsSpherical());
         prescription.setNearOsCylindrical(prescriptionRequest.nearOsCylindrical());
         prescription.setNearOsAxis(prescriptionRequest.nearOsAxis());
         prescription.setNearOsDnp(prescriptionRequest.nearOsDnp());
         prescription.setNearOsHeight(prescriptionRequest.nearOsHeight());
-        prescription.setNearOsDp(prescriptionRequest.nearOsDp());
         prescription.setNotes(prescriptionRequest.notes());
 
         prescriptionRepository.save(prescription);
