@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record StockRequest(
         @NotNull(message = "A quantidade é obrigatória.")
         @Min(1)  
-        Integer quantity) {
+        Integer quantity,
+        String comment) {
 
 }

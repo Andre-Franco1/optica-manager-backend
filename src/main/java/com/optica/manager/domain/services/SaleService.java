@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.optica.manager.domain.entities.Frame;
 import com.optica.manager.domain.entities.Product;
 import com.optica.manager.domain.entities.Sale;
 import com.optica.manager.domain.entities.SaleItem;
@@ -45,15 +46,17 @@ public class SaleService {
     public SaleResponse createSale(SaleRequest saleRequest) {
 
         Sale sale = createSaleUseCase.validateSale(SaleMapper.fromSaleRequestDTO(saleRequest));
-        
+
         setProductInSaleItem(sale, saleRequest);
         createSaleUseCase.validateSaleItemHasProduct(sale.getSaleItems());
 
-        for (SaleItem saleItem : sale.getSaleItems()) {
-            stockMovementService.decreaseStockInSale(saleItem.getProduct(), 1);
-        }
-
         saleRepository.save(sale);
+
+        for (SaleItem saleItem : sale.getSaleItems()) {
+            if (saleItem.getProduct() instanceof Frame frame) {
+                stockMovementService.decreaseStockInSale(frame, 1, sale); // TODO change quantity value when sale items accept quantity too
+            }
+        }
         return SaleMapper.toSaleResponseDTO(sale);
     }
 
@@ -63,7 +66,7 @@ public class SaleService {
             SaleItemRequest saleItemReq = saleRequest.saleItems().get(i);
 
             Product product = productRepository.findById(saleItemReq.product().id())
-                .orElseThrow(() -> new BusinessException("Produto não encontrado"));
+                    .orElseThrow(() -> new BusinessException("Produto não encontrado"));
 
             saleItem.setProduct(product);
         }

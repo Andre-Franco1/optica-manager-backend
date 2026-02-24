@@ -78,14 +78,14 @@ public class FrameController {
     }
 
     @PostMapping("{id}/stock/entry")
-    public ResponseEntity<Void> increaseStock(@PathVariable Long id, @RequestBody StockRequest request) {
-        stockMovementService.increaseStock(id, request.quantity());
+    public ResponseEntity<Void> increaseStock(@PathVariable Long id, @RequestBody StockRequest stockRequest) {
+        stockMovementService.increaseStock(id, stockRequest);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/stock/exit")
-    public ResponseEntity<Void> decreaseStock(@PathVariable Long id, @RequestBody StockRequest request) {
-        stockMovementService.decreaseStock(id, request.quantity());
+    public ResponseEntity<Void> decreaseStock(@PathVariable Long id, @RequestBody StockRequest stockRequest) {
+        stockMovementService.decreaseStock(id, stockRequest);
         return ResponseEntity.noContent().build();
     }
     
