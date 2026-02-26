@@ -1,0 +1,19 @@
+package com.optica.manager.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import com.optica.manager.domain.enums.SaleStatus;
+
+public record ServiceOrderPdfDTO (
+    Long osNumber,
+    Long clientId,
+    String clientName,
+    LocalDate issueDate,
+    SaleStatus saleStatus,
+    LocalDate estimatedDeliveryDate,
+    BigDecimal totalAmount,
+    List<SaleItemPdfDTO> saleItems){
+    
+}

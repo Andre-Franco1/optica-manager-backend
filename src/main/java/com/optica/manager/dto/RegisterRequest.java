@@ -1,4 +1,4 @@
-package com.optica.manager.dto.request;
+package com.optica.manager.dto;
 
 public record RegisterRequest (
     String name,

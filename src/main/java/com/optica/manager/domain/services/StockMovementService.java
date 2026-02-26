@@ -10,7 +10,7 @@ import com.optica.manager.domain.enums.MovementType;
 import com.optica.manager.domain.repositories.FrameRepository;
 import com.optica.manager.domain.repositories.StockMovementRepository;
 import com.optica.manager.domain.services.exceptions.BusinessException;
-import com.optica.manager.dto.request.StockRequest;
+import com.optica.manager.dto.StockRequest;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;

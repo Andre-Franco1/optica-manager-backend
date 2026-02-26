@@ -39,6 +39,9 @@ VALUES ('2025-06-26', NULL, '2025-06-26', 389.90, 'CASH', NULL, 'this is a comme
 INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (1, 1 , 150);
 INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (2, 1, 420);
 
+INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (1, 2 , 150);
+INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (2, 2, 420);
+
 INSERT INTO prescriptions (
     date,
     distance_od_spherical,

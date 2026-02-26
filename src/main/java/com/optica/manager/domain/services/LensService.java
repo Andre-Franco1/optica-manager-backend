@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.LensMapper;
 import com.optica.manager.domain.repositories.LensRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.request.LensRequest;
-import com.optica.manager.dto.response.LensResponse;
+import com.optica.manager.dto.LensRequest;
+import com.optica.manager.dto.LensResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -71,13 +71,14 @@ public class LensService {
 
     @Transactional
     public void deleteById(long id) {
+        
+        if (!lensRepository.existsById(id)) {
+            throw new EntityNotFoundException("Lente não encontrada.");
+        }
+        
         try {
-            if (lensRepository.existsById(id)){
-                lensRepository.deleteById(id);
-            }
-            else {
-                throw new EntityNotFoundException("Lente não encontrada.");
-            }
+            lensRepository.deleteById(id);
+            lensRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Conflito ao remover a Lente.");
         }

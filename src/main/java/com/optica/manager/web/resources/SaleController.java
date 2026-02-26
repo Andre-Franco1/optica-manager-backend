@@ -14,8 +14,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.enums.SaleStatus;
 import com.optica.manager.domain.services.SaleService;
-import com.optica.manager.dto.request.SaleRequest;
-import com.optica.manager.dto.response.SaleResponse;
+import com.optica.manager.dto.SaleRequest;
+import com.optica.manager.dto.SaleResponse;
 
 @RestController
 @RequestMapping("sales")

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.optica.manager.domain.entities.User;
 import com.optica.manager.domain.repositories.UserRepository;
-import com.optica.manager.dto.request.LoginRequest;
-import com.optica.manager.dto.request.RegisterRequest;
-import com.optica.manager.dto.response.LoginResponse;
+import com.optica.manager.dto.LoginRequest;
+import com.optica.manager.dto.LoginResponse;
+import com.optica.manager.dto.RegisterRequest;
 import com.optica.manager.infra.security.TokenService;
 
 import jakarta.persistence.EntityNotFoundException;

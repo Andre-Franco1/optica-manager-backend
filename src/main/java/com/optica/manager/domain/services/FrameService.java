@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.FrameMapper;
 import com.optica.manager.domain.repositories.FrameRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.request.FrameRequest;
-import com.optica.manager.dto.response.FrameResponse;
+import com.optica.manager.dto.FrameRequest;
+import com.optica.manager.dto.FrameResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -69,13 +69,13 @@ public class FrameService {
 
     @Transactional
     public void deleteById(long id) {
+        if (!frameRepository.existsById(id)) {
+            throw new EntityNotFoundException("Armação não encontrada.");
+        }
+
         try {
-            if (frameRepository.existsById(id)){
-                frameRepository.deleteById(id);
-            }
-            else {
-                throw new EntityNotFoundException("Armação não encontrada.");
-            }
+            frameRepository.deleteById(id);
+            frameRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Conflito ao remover a armação.");
         }

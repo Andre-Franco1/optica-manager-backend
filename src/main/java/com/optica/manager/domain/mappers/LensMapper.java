@@ -1,8 +1,8 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Lens;
-import com.optica.manager.dto.request.LensRequest;
-import com.optica.manager.dto.response.LensResponse;
+import com.optica.manager.dto.LensRequest;
+import com.optica.manager.dto.LensResponse;
 
 public class LensMapper {
     public static LensResponse toLensResponseDTO(Lens lens) {

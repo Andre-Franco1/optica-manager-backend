@@ -13,8 +13,8 @@ import com.optica.manager.domain.repositories.ClientRepository;
 import com.optica.manager.domain.repositories.OphthalmologistRepository;
 import com.optica.manager.domain.repositories.PrescriptionRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.request.PrescriptionRequest;
-import com.optica.manager.dto.response.PrescriptionResponse;
+import com.optica.manager.dto.PrescriptionRequest;
+import com.optica.manager.dto.PrescriptionResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 

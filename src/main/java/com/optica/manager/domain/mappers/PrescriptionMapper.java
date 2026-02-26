@@ -1,8 +1,8 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Prescription;
-import com.optica.manager.dto.request.PrescriptionRequest;
-import com.optica.manager.dto.response.PrescriptionResponse;
+import com.optica.manager.dto.PrescriptionRequest;
+import com.optica.manager.dto.PrescriptionResponse;
 
 public class PrescriptionMapper {
 

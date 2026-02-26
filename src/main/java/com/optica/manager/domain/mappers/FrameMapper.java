@@ -1,8 +1,8 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Frame;
-import com.optica.manager.dto.request.FrameRequest;
-import com.optica.manager.dto.response.FrameResponse;
+import com.optica.manager.dto.FrameRequest;
+import com.optica.manager.dto.FrameResponse;
 
 public class FrameMapper {
     
