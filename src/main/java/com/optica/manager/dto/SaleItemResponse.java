@@ -1,8 +1,6 @@
-package com.optica.manager.dto.response;
+package com.optica.manager.dto;
 
 import java.math.BigDecimal;
-
-import com.optica.manager.dto.LongDTO;
 
 public record SaleItemResponse (
     LongDTO product,

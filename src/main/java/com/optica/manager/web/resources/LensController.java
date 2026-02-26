@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.LensService;
-import com.optica.manager.dto.request.LensRequest;
-import com.optica.manager.dto.response.LensResponse;
+import com.optica.manager.dto.LensRequest;
+import com.optica.manager.dto.LensResponse;
 
 @RestController
 @RequestMapping("lenses")

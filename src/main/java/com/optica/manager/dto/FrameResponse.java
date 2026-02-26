@@ -1,4 +1,4 @@
-package com.optica.manager.dto.response;
+package com.optica.manager.dto;
 
 import com.optica.manager.domain.enums.FrameBrand;
 import com.optica.manager.domain.enums.FrameType;

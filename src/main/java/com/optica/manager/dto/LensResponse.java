@@ -1,4 +1,4 @@
-package com.optica.manager.dto.response;
+package com.optica.manager.dto;
 
 import java.util.Set;
 

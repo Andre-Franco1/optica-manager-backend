@@ -10,14 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.optica.manager.domain.mappers.ClientMapper;
 import com.optica.manager.domain.repositories.ClientRepository;
 import com.optica.manager.domain.services.exceptions.DatabaseException;
-import com.optica.manager.dto.request.ClientRequest;
-import com.optica.manager.dto.response.ClientResponse;
+import com.optica.manager.dto.ClientRequest;
+import com.optica.manager.dto.ClientResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClientService {
-    
+
     @Autowired
     private ClientRepository clientRepository;
 
@@ -30,7 +30,8 @@ public class ClientService {
 
     @Transactional(readOnly = true)
     public ClientResponse getById(long id) {
-        var client = clientRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
+        var client = clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
         return ClientMapper.toClientResponseDTO(client);
     }
 
@@ -57,13 +58,13 @@ public class ClientService {
 
     @Transactional
     public void deleteById(long id) {
+        if (!clientRepository.existsById(id)) {
+            throw new EntityNotFoundException("Cliente não encontrado.");
+        }
+
         try {
-            if (clientRepository.existsById(id)){
-                clientRepository.deleteById(id);
-            }
-            else {
-                throw new EntityNotFoundException("Cliente não encontrado.");
-            }
+            clientRepository.deleteById(id);
+            clientRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Conflito ao remover o cliente.");
         }

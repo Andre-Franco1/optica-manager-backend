@@ -1,8 +1,8 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Client;
-import com.optica.manager.dto.request.ClientRequest;
-import com.optica.manager.dto.response.ClientResponse;
+import com.optica.manager.dto.ClientRequest;
+import com.optica.manager.dto.ClientResponse;
 
 public class ClientMapper {
 

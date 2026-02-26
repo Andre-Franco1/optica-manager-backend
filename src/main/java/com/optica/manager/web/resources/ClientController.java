@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.optica.manager.domain.services.ClientService;
-import com.optica.manager.dto.request.ClientRequest;
-import com.optica.manager.dto.response.ClientResponse;
+import com.optica.manager.dto.ClientRequest;
+import com.optica.manager.dto.ClientResponse;
 
 @RestController
 @RequestMapping("clients")
