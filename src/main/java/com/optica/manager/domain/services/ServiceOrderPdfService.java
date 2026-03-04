@@ -156,7 +156,7 @@ public class ServiceOrderPdfService {
 
         // ROW 1
         secondInnerTable.addCell(noBorderCell("DATA: " + formattedIssueDate, smallFont));
-        secondInnerTable.addCell(noBorderCell("OPERADOR: ALESSANDRO", smallFont));
+        secondInnerTable.addCell(noBorderCell("OPERADOR: " + serviceOrderDTO.userName(), smallFont));
         secondInnerTable.addCell(noBorderCell("VENDEDOR: ALESSANDRO FRANCO", smallFont));
 
         // ROW 2
@@ -261,7 +261,7 @@ public class ServiceOrderPdfService {
         headerRow.setWidthPercentage(100);
         headerRow.setWidths(new float[] { 1, 3, 2, 1 });
 
-        Image logo = Image.getInstance("src/main/resources/static/mds.jpeg");
+        Image logo = Image.getInstance(serviceOrderDTO.unitLogoPath());
         logo.scaleToFit(40, 40);
         logo.setAlignment(Element.ALIGN_CENTER);
 
@@ -275,10 +275,10 @@ public class ServiceOrderPdfService {
         Font companyFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12);
         Font addressFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
 
-        Paragraph companyName = new Paragraph("ÓTICA MORADA DO SOL", companyFont);
+        Paragraph companyName = new Paragraph(serviceOrderDTO.unitName().toUpperCase(), companyFont);
         companyName.setSpacingAfter(2f);
 
-        Paragraph address = new Paragraph("Avenida Tiradentes, Nº196 - (11) 4712-8286", addressFont);
+        Paragraph address = new Paragraph(serviceOrderDTO.unitAddressInfo(), addressFont);
         address.setSpacingBefore(0f);
 
         PdfPCell companyCell = new PdfPCell();

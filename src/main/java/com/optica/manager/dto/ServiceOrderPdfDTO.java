@@ -14,6 +14,10 @@ public record ServiceOrderPdfDTO (
     SaleStatus saleStatus,
     LocalDate estimatedDeliveryDate,
     BigDecimal totalAmount,
+    String userName,
+    String unitName,
+    String unitAddressInfo,
+    String unitLogoPath,
     List<SaleItemPdfDTO> saleItems){
     
 }

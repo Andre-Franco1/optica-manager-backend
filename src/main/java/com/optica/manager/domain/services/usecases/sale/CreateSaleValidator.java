@@ -25,7 +25,7 @@ public class CreateSaleValidator {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Sale validateSale(Sale sale) {
+    public void validateSale(Sale sale) {
 
         validateClientExists(sale.getClient().getId());
         validateUserExists(sale.getUser().getId());
@@ -40,7 +40,6 @@ public class CreateSaleValidator {
 
         validateSaleStatusIsPending(sale.getSaleStatus());
 
-        return sale;
     }
 
     public void validateSaleItemHasProduct(List<SaleItem> saleItems) {

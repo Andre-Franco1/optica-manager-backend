@@ -8,8 +8,6 @@ import com.optica.manager.domain.entities.Client;
 import com.optica.manager.domain.entities.Prescription;
 import com.optica.manager.domain.entities.Sale;
 import com.optica.manager.domain.entities.SaleItem;
-import com.optica.manager.domain.entities.User;
-import com.optica.manager.dto.IntegerDTO;
 import com.optica.manager.dto.LongDTO;
 import com.optica.manager.dto.SaleItemResponse;
 import com.optica.manager.dto.SaleRequest;
@@ -38,7 +36,6 @@ public class SaleMapper {
             sale.getClient().getId(),
             sale.getClient().getCpf(),
             sale.getClient().getName(),
-            new IntegerDTO(sale.getUser().getId()),
             saleItems
         );
     }
@@ -55,7 +52,6 @@ public class SaleMapper {
         }
         
         sale.setClient(new Client(saleRequest.client().id()));
-        sale.setUser(new User(saleRequest.user().id()));
         
         List<SaleItem> saleItems = saleRequest.saleItems().stream().map(SaleItemRequest -> {
             SaleItem saleItem = new SaleItem();

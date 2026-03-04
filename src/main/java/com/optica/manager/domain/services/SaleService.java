@@ -3,6 +3,8 @@ package com.optica.manager.domain.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +12,7 @@ import com.optica.manager.domain.entities.Frame;
 import com.optica.manager.domain.entities.Product;
 import com.optica.manager.domain.entities.Sale;
 import com.optica.manager.domain.entities.SaleItem;
+import com.optica.manager.domain.entities.User;
 import com.optica.manager.domain.enums.SaleStatus;
 import com.optica.manager.domain.mappers.SaleMapper;
 import com.optica.manager.domain.repositories.ProductRepository;
@@ -20,6 +23,9 @@ import com.optica.manager.dto.SaleItemRequest;
 import com.optica.manager.dto.SaleRequest;
 import com.optica.manager.dto.SaleResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class SaleService {
 
@@ -45,7 +51,14 @@ public class SaleService {
     @Transactional
     public SaleResponse createSale(SaleRequest saleRequest) {
 
-        Sale sale = createSaleUseCase.validateSale(SaleMapper.fromSaleRequestDTO(saleRequest));
+        Sale sale = SaleMapper.fromSaleRequestDTO(saleRequest);
+
+        User user = getAuthenticatedUser();
+
+        sale.setUser(user);
+        sale.setUnit(user.getUnit());
+
+        createSaleUseCase.validateSale(sale);
 
         setProductInSaleItem(sale, saleRequest);
         createSaleUseCase.validateSaleItemHasProduct(sale.getSaleItems());
@@ -54,7 +67,8 @@ public class SaleService {
 
         for (SaleItem saleItem : sale.getSaleItems()) {
             if (saleItem.getProduct() instanceof Frame frame) {
-                stockMovementService.decreaseStockInSale(frame, 1, sale); // TODO change quantity value when sale items accept quantity too
+                stockMovementService.decreaseStockInSale(frame, 1, sale); // TODO change quantity value when sale items
+                                                                          // accept quantity too
             }
         }
         return SaleMapper.toSaleResponseDTO(sale);
@@ -70,5 +84,10 @@ public class SaleService {
 
             saleItem.setProduct(product);
         }
+    }
+
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 }
