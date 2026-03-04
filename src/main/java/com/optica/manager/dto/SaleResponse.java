@@ -22,7 +22,7 @@ public record SaleResponse(
         Long clientId,
         String clientCpf,
         String clientName,
-        IntegerDTO user,
+        // userName
         List<SaleItemResponse> saleItems) {
 
 }

@@ -20,7 +20,6 @@ public record SaleRequest(
         SaleStatus saleStatus,
         LongDTO client,
         Long prescriptionId,
-        IntegerDTO user,
         List<SaleItemRequest> saleItems) {
 
 }

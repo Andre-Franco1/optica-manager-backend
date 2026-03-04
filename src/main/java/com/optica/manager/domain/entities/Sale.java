@@ -61,10 +61,12 @@ public class Sale implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleItem> saleItems = new ArrayList<>();
-
-
 
     public Long getId() {
         return id;
@@ -181,6 +183,14 @@ public class Sale implements Serializable {
     public void addSaleItem(SaleItem saleItem) {
         saleItems.add(saleItem);
         saleItem.setSale(this);
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     @Override

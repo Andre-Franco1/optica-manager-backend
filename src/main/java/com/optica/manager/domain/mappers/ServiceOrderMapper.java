@@ -25,21 +25,21 @@ public class ServiceOrderMapper {
                 sale.getSaleStatus(),
                 sale.getEstimatedDeliveryDate(),
                 sale.getTotalAmount(),
+                sale.getUser().getName(),
+                sale.getUnit().getName(),
+                sale.getUnit().getAddress(),
+                sale.getUnit().getLogoPath(),
                 items);
     }
 
-    /*
-     * unit.name()
-     * unit.logo()
-     * unit.address()
-     * unit.phone()
+     /*
      * sale.seller()
-     * sale.user()
      * sale.deliveryStatus()
-     * sale.paymentStatus()
      * sale.client.prescription...
+     
+     * sale.paymentStatus()
      * sale.List<Installment>
-     * sale.cardBrand
+     sale.cardBrand
      * sale.entryPayment
      * sale.resultPrice (totalAmount - entryPayment)
      * item.quantity

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -42,6 +43,10 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<Sale> sales = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
 
     public User() {
     }
@@ -106,6 +111,14 @@ public class User implements Serializable {
         this.sales = sales;
     }
 
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -136,5 +149,5 @@ public class User implements Serializable {
         return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", active="
                 + active + "]";
     }
-    
+
 }
