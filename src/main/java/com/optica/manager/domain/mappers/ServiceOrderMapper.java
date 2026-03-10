@@ -21,6 +21,7 @@ public class ServiceOrderMapper {
                 sale.getId(),
                 sale.getClient().getId(),
                 sale.getClient().getName(),
+                sale.getClient().getCpf(),
                 sale.getIssueDate(),
                 sale.getSaleStatus(),
                 sale.getEstimatedDeliveryDate(),

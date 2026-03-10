@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -22,6 +25,10 @@ public class Client implements Serializable {
     private String name;
     private String cpf;
     private String phone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id", nullable = false)
+    private Unit unit;
 
     @OneToMany(mappedBy = "client")
     private List<Prescription> prescriptions = new ArrayList<>();
@@ -88,6 +95,14 @@ public class Client implements Serializable {
 
     public void setSales(List<Sale> sales) {
         this.sales = sales;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     @Override

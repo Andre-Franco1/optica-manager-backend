@@ -21,49 +21,55 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private TenantService tenantService;
+
     @Transactional(readOnly = true)
     public Page<ClientResponse> findByNameContainingIgnoreCase(String name, int page, int size) {
         var pageRequest = PageRequest.of(page, size);
-        var pageClient = clientRepository.findByNameContainingIgnoreCase(name, pageRequest);
+        Integer unitId = tenantService.getUnitId();
+        var pageClient = clientRepository.findByNameContainingIgnoreCaseAndUnitId(name, pageRequest, unitId);
         return pageClient.map(c -> ClientMapper.toClientResponseDTO(c));
     }
 
     @Transactional(readOnly = true)
     public ClientResponse getById(long id) {
-        var client = clientRepository.findById(id)
+        var unitId = tenantService.getUnitId();
+        var client = clientRepository.findByIdAndUnitId(id, unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
         return ClientMapper.toClientResponseDTO(client);
     }
 
     @Transactional
     public ClientResponse save(ClientRequest clientRequest) {
-        var client = clientRepository.save(ClientMapper.fromClientRequestDTO(clientRequest));
+        var client = ClientMapper.fromClientRequestDTO(clientRequest);
+        client.setUnit(tenantService.getUnitReference());
+        client = clientRepository.save(client);
         return ClientMapper.toClientResponseDTO(client);
     }
 
     @Transactional
     public void update(long id, ClientRequest clientRequest) {
-        try {
-            var client = clientRepository.getReferenceById(id);
+        var unitId = tenantService.getUnitId();
+        var client = clientRepository.findByIdAndUnitId(id, unitId)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
 
-            client.setCpf(clientRequest.cpf());
-            client.setName(clientRequest.name());
-            client.setPhone(clientRequest.phone());
-
-            clientRepository.save(client);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Cliente não encontrado.");
-        }
+        client.setCpf(clientRequest.cpf());
+        client.setName(clientRequest.name());
+        client.setPhone(clientRequest.phone());
     }
 
     @Transactional
     public void deleteById(long id) {
-        if (!clientRepository.existsById(id)) {
+
+        Integer unitId = tenantService.getUnitId();
+
+        if (!clientRepository.existsByIdAndUnitId(id, unitId)) {
             throw new EntityNotFoundException("Cliente não encontrado.");
         }
 
         try {
-            clientRepository.deleteById(id);
+            clientRepository.deleteByIdAndUnitId(id, unitId);
             clientRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Conflito ao remover o cliente.");

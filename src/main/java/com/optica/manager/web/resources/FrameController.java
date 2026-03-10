@@ -33,7 +33,7 @@ public class FrameController {
     @Autowired
     private StockMovementService stockMovementService;
 
-    @GetMapping(params = {"page", "limit"})
+    @GetMapping(params = {"page", "size"})
     public ResponseEntity<Page<FrameResponse>> getFramesPage(
             @RequestParam(name = "name_like", defaultValue = "") String name,
             @RequestParam(name = "page", defaultValue = "0") int page,

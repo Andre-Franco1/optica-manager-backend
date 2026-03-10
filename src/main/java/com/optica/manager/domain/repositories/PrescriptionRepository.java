@@ -9,12 +9,14 @@ import com.optica.manager.domain.entities.Prescription;
 
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
 
-    List<Prescription> findAllByClientId(Long clientId);
+    List<Prescription> findAllByClientIdAndUnitId(Long clientId, Integer unitId);
 
-    Optional<Prescription> findByIdAndClientId(Long id, Long clientId);
+    Optional<Prescription> findByIdAndUnitId(Long id, Integer unitId);
 
-    boolean existsByIdAndClientId(Long id, Long clientId);
+    Optional<Prescription> findByIdAndClientIdAndUnitId(Long id, Long clientId, Integer unitId);
 
-    long deleteByIdAndClientId(Long id, Long clientId);
+    boolean existsByIdAndClientIdAndUnitId(Long id, Long clientId, Integer unitId);
+
+    void deleteByIdAndClientIdAndUnitId(Long id, Long clientId, Integer unitId);
 
 }

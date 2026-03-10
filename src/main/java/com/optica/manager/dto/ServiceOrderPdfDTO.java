@@ -10,6 +10,7 @@ public record ServiceOrderPdfDTO (
     Long osNumber,
     Long clientId,
     String clientName,
+    String clientCpf,
     LocalDate issueDate,
     SaleStatus saleStatus,
     LocalDate estimatedDeliveryDate,
