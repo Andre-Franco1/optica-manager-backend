@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,6 +56,10 @@ public class Prescription implements Serializable {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id", nullable = false)
+    private Unit unit;
 
     @ManyToOne
     @JoinColumn(name = "ophthalmologist_id", nullable = false)
@@ -314,6 +319,14 @@ public class Prescription implements Serializable {
 
     public void setOphthalmologist(Ophthalmologist ophthalmologist) {
         this.ophthalmologist = ophthalmologist;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     @Override

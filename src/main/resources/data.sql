@@ -1,9 +1,9 @@
 INSERT INTO units (CODE, NAME, LOGO_PATH, PHONE_NUMBER, STREET, NUMBER) VALUES ('MDS', 'Ótica Morada do Sol', 'src/main/resources/static/mds.jpeg', '(11) 4712-8286', 'Avenida Tiradentes', '196');
 INSERT INTO units (CODE, NAME, LOGO_PATH, PHONE_NUMBER, STREET, NUMBER) VALUES ('ALLE', 'Ótica Alle', 'src/main/resources/static/alle.jpeg', '(11) 4712-1947', 'Avenida Tiradentes', '120');
 
-INSERT INTO clients (CPF, NAME, PHONE) VALUES ('911.037.110-91','Ana Silva', '11 9453345435');
-INSERT INTO clients (CPF, NAME, PHONE) VALUES ('502.159.000-65', 'Fernando Nunes', '11 923830384');
-INSERT INTO clients (CPF, NAME, PHONE) VALUES ('334.143.460-79', 'Victor Gomes', '11 903059371');
+INSERT INTO clients (CPF, NAME, PHONE, UNIT_ID) VALUES ('911.037.110-91','Ana Silva', '11 9453345435', 1);
+INSERT INTO clients (CPF, NAME, PHONE, UNIT_ID) VALUES ('502.159.000-65', 'Fernando Nunes', '11 923830384', 1);
+INSERT INTO clients (CPF, NAME, PHONE, UNIT_ID) VALUES ('334.143.460-79', 'Victor Gomes', '11 903059371', 1);
 
 INSERT INTO ophthalmologists (NAME) VALUES ('Dr. Carlos da Silva');
 INSERT INTO ophthalmologists (NAME) VALUES ('Dr. José Ferreira');
@@ -26,9 +26,9 @@ INSERT INTO user_roles (ROLE_ID, USER_ID) VALUES (2, 2);
 INSERT INTO user_roles (ROLE_ID, USER_ID) VALUES (1, 3);
 INSERT INTO user_roles (ROLE_ID, USER_ID) VALUES (2, 3);
 
-INSERT INTO products (CODE, NAME) VALUES ('ARM001', 'Armação receituário Keen');
-INSERT INTO products (CODE, NAME) VALUES ('LN003', 'Zeiss 1.6 Monofocal');
-INSERT INTO products (CODE, NAME) VALUES ('ARM002', 'Armação solar Keen');
+INSERT INTO products (CODE, NAME, UNIT_ID) VALUES ('ARM001', 'Armação receituário Keen', 1);
+INSERT INTO products (CODE, NAME, UNIT_ID) VALUES ('LN003', 'Zeiss 1.6 Monofocal', 1);
+INSERT INTO products (CODE, NAME, UNIT_ID) VALUES ('ARM002', 'Armação solar Keen', 1);
 
 
 INSERT INTO frames (STOCK_QUANTITY, BRAND , TYPE, PRODUCT_ID) VALUES (150, 'KEEN', 'PRESCRIPTION', 1);
@@ -84,7 +84,8 @@ INSERT INTO prescriptions (
 
     notes,
     client_id,
-    ophthalmologist_id
+    ophthalmologist_id,
+    unit_id
 ) VALUES (
     '2026-01-02',
     -1.25, -0.50, 90, 31.5, 1.75,
@@ -95,7 +96,8 @@ INSERT INTO prescriptions (
     62.0,
     'Paciente relata leve fotofobia.',
     1,
-    3
+    3,
+    1
 );
 
 INSERT INTO prescriptions (
@@ -130,7 +132,8 @@ INSERT INTO prescriptions (
 
     notes,
     client_id,
-    ophthalmologist_id
+    ophthalmologist_id,
+    unit_id
 ) VALUES (
     '2026-01-02',
     -1.25, -0.50, 90, 31.5, 1.75,
@@ -141,5 +144,31 @@ INSERT INTO prescriptions (
     62.0,
     'Paciente relata leve fotofobia.',
     1,
-    3
+    3,
+    1
 );
+
+
+
+
+
+--UNIT 2--
+
+INSERT INTO clients (CPF, NAME, PHONE, UNIT_ID) VALUES ('612.355.280-57', 'Maria de Fátima', '11 903049371', 2);
+
+INSERT INTO products (CODE, NAME, UNIT_ID) VALUES ('ARM001', 'Armação receituário Keen', 2);
+INSERT INTO products (CODE, NAME, UNIT_ID) VALUES ('LN003', 'Zeiss 1.67 Monofocal', 2);
+
+
+INSERT INTO frames (STOCK_QUANTITY, BRAND , TYPE, PRODUCT_ID) VALUES (80, 'OAKLEY', 'PRESCRIPTION', 4);
+
+INSERT INTO lenses (BRAND, INDEX, MATERIAL, TYPE, PRODUCT_ID) VALUES ('ZEISS', 'I167', 'HIGH_INDEX', 'MONOFOCAL', 5);
+
+INSERT INTO lens_treatments (lens_id, treatments) VALUES (5, 'ANTI_REFLECTIVE');
+INSERT INTO lens_treatments (lens_id, treatments) VALUES (5, 'UV');
+
+INSERT INTO sales (ISSUE_DATE, DELIVERY_DATE, ESTIMATED_DELIVERY_DATE, TOTAL_AMOUNT, PAYMENT_METHOD, INSTALLMENTS, COMMENTS, SALE_STATUS, CLIENT_ID, PRESCRIPTION_ID, USER_ID, CARD_BRAND, UNIT_ID) 
+VALUES ('2025-06-26', NULL, '2025-06-26', 389.90, 'CASH', NULL, 'this is a comment of the sale', 'PENDING', 4, NULL, 2, NULL, 2);
+
+INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (4, 3 , 150);
+INSERT INTO sale_items (PRODUCT_ID, SALE_ID, PRICE) VALUES (5, 3, 420);

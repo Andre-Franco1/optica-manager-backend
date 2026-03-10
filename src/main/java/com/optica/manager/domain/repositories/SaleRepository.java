@@ -9,5 +9,5 @@ import com.optica.manager.domain.enums.SaleStatus;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     
-    Page<Sale> findAllBySaleStatus(SaleStatus status,Pageable pageable);
+    Page<Sale> findAllBySaleStatusAndUnitId(SaleStatus status,Pageable pageable, Integer unitId);
 }

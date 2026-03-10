@@ -162,7 +162,7 @@ public class ServiceOrderPdfService {
         // ROW 2
         secondInnerTable.addCell(noBorderCell(
                 "CLIENTE: " + String.format("%07d", serviceOrderDTO.clientId()) + " " + serviceOrderDTO.clientName().toUpperCase(), boldFont));
-        secondInnerTable.addCell(noBorderCell("CPF: 111.111.111.-11", smallFont));
+        secondInnerTable.addCell(noBorderCell("CPF: " + serviceOrderDTO.clientCpf(), smallFont));
         secondInnerTable.addCell(noBorderCell("DATA NASC.: 20/02/1984", smallFont));
 
         // ROW 3

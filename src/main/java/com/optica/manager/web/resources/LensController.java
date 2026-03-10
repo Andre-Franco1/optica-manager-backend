@@ -28,7 +28,7 @@ public class LensController {
     @Autowired
     private LensService lensService;
 
-    @GetMapping(params = {"page", "limit"})
+    @GetMapping(params = {"page", "size"})
     public ResponseEntity<Page<LensResponse>> getLensesPage(
             @RequestParam(name = "name_like", defaultValue = "") String name,
             @RequestParam(name = "page", defaultValue = "0") int page,

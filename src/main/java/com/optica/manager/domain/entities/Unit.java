@@ -12,7 +12,7 @@ public class Unit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String code;
     private String name;
@@ -21,7 +21,7 @@ public class Unit {
     private String street;
     private String number;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -3,8 +3,6 @@ package com.optica.manager.domain.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +39,14 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private TenantService tenantService;
+
     @Transactional(readOnly = true)
     public Page<SaleResponse> findSales(int page, int size, SaleStatus status) {
         var pageRequest = PageRequest.of(page, size);
-        var pageSale = saleRepository.findAllBySaleStatus(status, pageRequest);
+        Integer unitId = tenantService.getUnitId();
+        var pageSale = saleRepository.findAllBySaleStatusAndUnitId(status, pageRequest, unitId);
         return pageSale.map(s -> SaleMapper.toSaleResponseDTO(s));
     }
 
@@ -53,7 +55,7 @@ public class SaleService {
 
         Sale sale = SaleMapper.fromSaleRequestDTO(saleRequest);
 
-        User user = getAuthenticatedUser();
+        User user = tenantService.getAuthenticatedUser();
 
         sale.setUser(user);
         sale.setUnit(user.getUnit());
@@ -85,9 +87,5 @@ public class SaleService {
             saleItem.setProduct(product);
         }
     }
-
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
-    }
+    
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,13 +52,18 @@ public class StockMovement {
     @JoinColumn(name = "sale_id")
     private Sale sale;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id", nullable = false)
+    private Unit unit;
+
     private Integer previousQuantity;
     private Integer newQuantity;
 
     public StockMovement() {
     }
 
-    public StockMovement(Product product, Integer quantity, MovementType movementType, Integer previousQuantity, Integer newQuantity, String comment, User user, Sale sale) {
+    public StockMovement(Product product, Integer quantity, MovementType movementType, Integer previousQuantity,
+            Integer newQuantity, String comment, User user, Sale sale, Unit unit) {
         this.product = product;
         this.quantity = quantity;
         this.movementType = movementType;
@@ -66,6 +72,19 @@ public class StockMovement {
         this.comment = comment;
         this.user = user;
         this.sale = sale;
+        this.unit = unit;
+    }
+
+    public StockMovement(Product product, Integer quantity, MovementType movementType, Integer previousQuantity,
+            Integer newQuantity, String comment, User user, Unit unit) {
+        this.product = product;
+        this.quantity = quantity;
+        this.movementType = movementType;
+        this.previousQuantity = previousQuantity;
+        this.newQuantity = newQuantity;
+        this.comment = comment;
+        this.user = user;
+        this.unit = unit;
     }
 
     public Long getId() {
@@ -111,7 +130,7 @@ public class StockMovement {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    
+
     public User getUser() {
         return user;
     }
@@ -142,6 +161,10 @@ public class StockMovement {
 
     public void setNewQuantity(Integer newQuantity) {
         this.newQuantity = newQuantity;
+    }
+
+    public Unit getUnit() {
+        return unit;
     }
 
     @Override

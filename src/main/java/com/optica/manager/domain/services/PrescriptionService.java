@@ -30,40 +30,50 @@ public class PrescriptionService {
     @Autowired
     private OphthalmologistRepository ophthalmologistRepository;
 
+    @Autowired
+    private TenantService tenantService;
+
     @Transactional(readOnly = true)
     public List<PrescriptionResponse> findAllByClient(Long clientId) {
-        var prescriptions = prescriptionRepository.findAllByClientId(clientId);
+        Integer unitId = tenantService.getUnitId();
+        var prescriptions = prescriptionRepository.findAllByClientIdAndUnitId(clientId, unitId);
         return prescriptions.stream().map(p -> PrescriptionMapper.toPrescriptionResponseDTO(p))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public PrescriptionResponse getById(long id) {
-        var prescription = prescriptionRepository.findById(id)
+        Integer unitId = tenantService.getUnitId();
+        var prescription = prescriptionRepository.findByIdAndUnitId(id, unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Receita não encontrada."));
         return PrescriptionMapper.toPrescriptionResponseDTO(prescription);
     }
 
     @Transactional
     public PrescriptionResponse save(long clientId, PrescriptionRequest prescriptionRequest) {
-        var client = clientRepository.findById(clientId)
+        Integer unitId = tenantService.getUnitId();
+
+        var client = clientRepository.findByIdAndUnitId(clientId, unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
 
         var ophthalmologist = ophthalmologistRepository.findById(prescriptionRequest.ophthalmologistId())
-                .orElseThrow(() -> new EntityNotFoundException("Oftalmologista não encontrado."));
+                .orElseThrow(() -> new EntityNotFoundException("Oftalmologista não encontrado."));//TODO adicionar unit no oftalmo
 
         var prescription = PrescriptionMapper.fromPrescriptionRequestDTO(prescriptionRequest);
         prescription.setClient(client);
         prescription.setOphthalmologist(ophthalmologist);
+        prescription.setUnit(tenantService.getUnitReference());
 
-        var savedPrescription = prescriptionRepository.save(prescription);
-        return PrescriptionMapper.toPrescriptionResponseDTO(savedPrescription);
+        prescriptionRepository.save(prescription);
+        return PrescriptionMapper.toPrescriptionResponseDTO(prescription);
     }
 
     @Transactional
     public void update(long clientId, long id, PrescriptionRequest prescriptionRequest) {
 
-        var prescription = prescriptionRepository.findByIdAndClientId(id, clientId)
+        Integer unitId = tenantService.getUnitId();
+        
+        var prescription = prescriptionRepository.findByIdAndClientIdAndUnitId(id, clientId, unitId)
                 .orElseThrow(() -> new EntityNotFoundException("Receita não encontrada."));
 
         prescription.setDate(prescriptionRequest.date());
@@ -96,15 +106,18 @@ public class PrescriptionService {
 
     @Transactional
     public void deleteById(long clientId, long id) {
+
+        Integer unitId = tenantService.getUnitId();
+
+        if (!prescriptionRepository.existsByIdAndClientIdAndUnitId(id, clientId, unitId)) {
+            throw new EntityNotFoundException("Receita não encontrada");
+        }
+        
         try {
-            if (prescriptionRepository.existsByIdAndClientId(id, clientId)){
-                prescriptionRepository.deleteByIdAndClientId(id, clientId);
-            }
-            else {
-                throw new EntityNotFoundException("Receita não encontrada.");
-            }
+            prescriptionRepository.deleteByIdAndClientIdAndUnitId(id, clientId, unitId);
+            prescriptionRepository.flush();
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Conflito ao remover a receita.");
+            throw new DatabaseException("Conflito ao remover a receita");
         }
     }   
 

@@ -20,64 +20,69 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class LensService {
-    
+
     @Autowired
     private LensRepository lensRepository;
+
+    @Autowired
+    private TenantService tenantService;
 
     @Transactional(readOnly = true)
     public Page<LensResponse> findByNameContainingIgnoreCase(String name, int page, int size) {
         var pageRequest = PageRequest.of(page, size);
-        var pageLens = lensRepository.findByNameContainingIgnoreCase(name, pageRequest);
+        var unitId = tenantService.getUnitId();
+        var pageLens = lensRepository.findByNameContainingIgnoreCaseAndUnitId(name, pageRequest, unitId);
         return pageLens.map(l -> LensMapper.toLensResponseDTO(l));
     }
 
     @Transactional(readOnly = true)
     public List<LensResponse> getLenses() {
-        var lenses = lensRepository.findAll();
+        var unitId = tenantService.getUnitId();
+        var lenses = lensRepository.findAllByUnitId(unitId);
         return lenses.stream().map(l -> LensMapper.toLensResponseDTO(l)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LensResponse getById(long id) {
-        var lens = lensRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Lente não encontrada."));
+        var unitId = tenantService.getUnitId();
+        var lens = lensRepository.findByIdAndUnitId(id, unitId)
+                .orElseThrow(() -> new EntityNotFoundException("Lente não encontrada."));
         return LensMapper.toLensResponseDTO(lens);
     }
 
     @Transactional
     public LensResponse save(LensRequest lensRequest) {
-        var lens = lensRepository.save(LensMapper.fromLensRequestDTO(lensRequest));
+        var lens = LensMapper.fromLensRequestDTO(lensRequest);
+        lens.setUnit(tenantService.getUnitReference());
+        lensRepository.save(lens);
         return LensMapper.toLensResponseDTO(lens);
     }
 
     @Transactional
     public void update(long id, LensRequest lensRequest) {
-        try {
-            var lens = lensRepository.getReferenceById(id);
 
+        var unitId = tenantService.getUnitId();
+        var lens = lensRepository.findByIdAndUnitId(id, unitId)
+                .orElseThrow(() -> new EntityNotFoundException("Lente não encontrada"));
 
-            lens.setCode(lensRequest.code());
-            lens.setName(lensRequest.name());
-            lens.setBrand(lensRequest.brand());
-            lens.setType(lensRequest.type());
-            lens.setIndex(lensRequest.index());
-            lens.setMaterial(lensRequest.material());
-            lens.setTreatments(lensRequest.treatments());
-            
-            lensRepository.save(lens);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Lente não encontrada.");
-        }
+        lens.setCode(lensRequest.code());
+        lens.setName(lensRequest.name());
+        lens.setBrand(lensRequest.brand());
+        lens.setType(lensRequest.type());
+        lens.setIndex(lensRequest.index());
+        lens.setMaterial(lensRequest.material());
+        lens.setTreatments(lensRequest.treatments());
     }
 
     @Transactional
     public void deleteById(long id) {
-        
-        if (!lensRepository.existsById(id)) {
+        var unitId = tenantService.getUnitId();
+        if (!lensRepository.existsByIdAndUnitId(id, unitId)) {
             throw new EntityNotFoundException("Lente não encontrada.");
         }
-        
+
         try {
-            lensRepository.deleteById(id);
+            lensRepository.deleteByIdAndUnitId(id, unitId);
             lensRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Conflito ao remover a Lente.");
