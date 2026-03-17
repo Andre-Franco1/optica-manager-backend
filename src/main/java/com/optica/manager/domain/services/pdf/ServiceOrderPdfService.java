@@ -1,8 +1,10 @@
-package com.optica.manager.domain.services;
+package com.optica.manager.domain.services.pdf;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
 
 import org.openpdf.text.Chunk;
 import org.openpdf.text.Document;
@@ -23,8 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.optica.manager.domain.entities.Sale;
+import com.optica.manager.domain.enums.PaymentMethod;
 import com.optica.manager.domain.mappers.ServiceOrderMapper;
 import com.optica.manager.domain.repositories.SaleRepository;
+import com.optica.manager.dto.PaymentInstallmentPdfDTO;
+import com.optica.manager.dto.PaymentPdfDTO;
+import com.optica.manager.dto.PrescriptionPdfDTO;
 import com.optica.manager.dto.SaleItemPdfDTO;
 import com.optica.manager.dto.ServiceOrderPdfDTO;
 
@@ -51,6 +57,8 @@ public class ServiceOrderPdfService {
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
+            PrescriptionPdfDTO prescription = serviceOrderDTO.prescriptionPdfDTO();
+
             Document document = new Document(PageSize.A4, 20, 20, 20, 20);
             PdfWriter.getInstance(document, baos);
 
@@ -64,15 +72,21 @@ public class ServiceOrderPdfService {
 
             addSectionHeader(document, serviceOrderDTO, "LOJA");
             addSaleInfo(document, serviceOrderDTO);
-            addPrescriptionTable(document, serviceOrderDTO);
+            if (prescription != null) {
+                addPrescriptionTable(document, prescription);
+            }
             addProductsDescriptionTable(document, serviceOrderDTO);
-            addPaymentTable(document);
+            addPaymentTable(document, serviceOrderDTO);
 
             addSectionDivider(document);
 
             addSectionHeader(document, serviceOrderDTO, "LABORATÓRIO");
             addSaleInfo(document, serviceOrderDTO);
-            addPrescriptionTable(document, serviceOrderDTO);
+
+            if (prescription != null) {
+                addPrescriptionTable(document, prescription);
+            }
+
             addProductsGridTable(document, serviceOrderDTO);
 
             document.close();
@@ -83,7 +97,8 @@ public class ServiceOrderPdfService {
         }
     }
 
-    private void addClientSection(Document document, ServiceOrderPdfDTO serviceOrderDTO) throws Exception {
+    private void addClientSection(Document document, ServiceOrderPdfDTO serviceOrderDTO) throws Exception {// TODO
+                                                                                                           // vendedor,                                                                                                           
 
         PdfPTable innerTable = new PdfPTable(1);
         innerTable.setWidthPercentage(100);
@@ -118,9 +133,9 @@ public class ServiceOrderPdfService {
         extraInfoRow.setWidthPercentage(100);
         extraInfoRow.setWidths(new float[] { 2, 2, 2 });
 
-        extraInfoRow.addCell(noBorderCell("FINANCEIRO: RECEBIDO", smallBoldFont));
-        extraInfoRow.addCell(noBorderCell("SINAL: 2.320,00   SALDO: 0,00", smallFont));
-        extraInfoRow.addCell(noBorderCell("ENTREGA: AGUARDANDO", smallBoldFont));
+        extraInfoRow.addCell(noBorderCell("FINANCEIRO: " + serviceOrderDTO.salePaymentStatus().getLabel(), smallBoldFont));
+        extraInfoRow.addCell(noBorderCell("SINAL: R$" + serviceOrderDTO.paidAmount() + " SALDO: R$" + serviceOrderDTO.remainingAmount(), smallFont));
+        extraInfoRow.addCell(noBorderCell("ENTREGA: " + serviceOrderDTO.deliveryStatus().getLabel(), smallBoldFont));
 
         PdfPCell extraInfoCell = new PdfPCell(extraInfoRow);
         extraInfoCell.setBorder(PdfPCell.NO_BORDER);
@@ -141,7 +156,8 @@ public class ServiceOrderPdfService {
         document.add(outerTable);
     }
 
-    private void addSaleInfo(Document document, ServiceOrderPdfDTO serviceOrderDTO) throws Exception {
+    private void addSaleInfo(Document document, ServiceOrderPdfDTO serviceOrderDTO) throws Exception {// TODO vendedor,
+                                                                                                      // data nasc
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedEstimatedDate = serviceOrderDTO.estimatedDeliveryDate().format(formatter);
@@ -161,14 +177,16 @@ public class ServiceOrderPdfService {
 
         // ROW 2
         secondInnerTable.addCell(noBorderCell(
-                "CLIENTE: " + String.format("%07d", serviceOrderDTO.clientId()) + " " + serviceOrderDTO.clientName().toUpperCase(), boldFont));
+                "CLIENTE: " + String.format("%07d", serviceOrderDTO.clientId()) + " "
+                        + serviceOrderDTO.clientName().toUpperCase(),
+                boldFont));
         secondInnerTable.addCell(noBorderCell("CPF: " + serviceOrderDTO.clientCpf(), smallFont));
         secondInnerTable.addCell(noBorderCell("DATA NASC.: 20/02/1984", smallFont));
 
         // ROW 3
         secondInnerTable.addCell(noBorderCell("P/ O DIA: " + formattedEstimatedDate, boldFont));
-        secondInnerTable.addCell(noBorderCell("FINANCEIRO: RECEBIDO", boldFont));
-        secondInnerTable.addCell(noBorderCell("STATUS: " + serviceOrderDTO.saleStatus(), boldFont));
+        secondInnerTable.addCell(noBorderCell("FINANCEIRO:" + serviceOrderDTO.salePaymentStatus().getLabel(), boldFont));
+        secondInnerTable.addCell(noBorderCell("ENTREGA: " + serviceOrderDTO.deliveryStatus().getLabel(), boldFont));
 
         PdfPCell secondFrameCell = new PdfPCell(secondInnerTable);
         secondFrameCell.setBorderWidth(1f);
@@ -184,7 +202,8 @@ public class ServiceOrderPdfService {
         document.add(secondOuterTable);
     }
 
-    private void addPrescriptionTable(Document document, ServiceOrderPdfDTO serviceOrderDTO)
+    private void addPrescriptionTable(Document document, PrescriptionPdfDTO prescriptionPdfDTO)// TODO conferir valores e
+                                                                                            // sinais + e -
             throws Exception {
 
         PdfPTable table = new PdfPTable(15);
@@ -198,7 +217,7 @@ public class ServiceOrderPdfService {
         table.addCell(headerCellPrescription("CIL"));
         table.addCell(headerCellPrescription("EIXO"));
         table.addCell(headerCellPrescription("DNP/Curva"));
-        table.addCell(headerCellPrescription("DNP/Diâmetro"));
+        table.addCell(headerCellPrescription("DP/Diâmetro"));
         table.addCell(headerCellPrescription("ALT"));
 
         table.addCell(headerCellPrescription("PERTO"));
@@ -206,50 +225,51 @@ public class ServiceOrderPdfService {
         table.addCell(headerCellPrescription("CIL"));
         table.addCell(headerCellPrescription("EIXO"));
         table.addCell(headerCellPrescription("DNP/Curva"));
-        table.addCell(headerCellPrescription("DNP/Diâmetro"));
+        table.addCell(headerCellPrescription("DP/Diâmetro"));
         table.addCell(headerCellPrescription("ALT"));
         table.addCell(headerCellPrescription("AD"));
 
         // Row 2
         table.addCell(valueCellPrescription("OD"));
-        table.addCell(valueCellPrescription("+0,00"));
-        table.addCell(valueCellPrescription("-1,25"));
-        table.addCell(valueCellPrescription("90"));
-        table.addCell(valueCellPrescription("0,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOdSpherical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOdCylindrical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOdAxis().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOdDnp().toString()));
         table.addCell(valueCellPrescription(""));
         table.addCell(valueCellPrescription(""));
 
         table.addCell(valueCellPrescription("OD"));
-        table.addCell(valueCellPrescription("+3,00"));
-        table.addCell(valueCellPrescription("-1,25"));
-        table.addCell(valueCellPrescription("90"));
-        table.addCell(valueCellPrescription("0,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOdSpherical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOdCylindrical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOdAxis().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOdDnp().toString()));
         table.addCell(valueCellPrescription(""));
-        table.addCell(valueCellPrescription(""));
-        table.addCell(valueCellPrescription("3,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOdHeight().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOdAddition().toString()));
 
         // Row 3
         table.addCell(valueCellPrescription("OE"));
-        table.addCell(valueCellPrescription("+0,00"));
-        table.addCell(valueCellPrescription("-1,00"));
-        table.addCell(valueCellPrescription("90"));
-        table.addCell(valueCellPrescription("0,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOsSpherical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOsCylindrical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOsAxis().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOsDnp().toString()));
         table.addCell(valueCellPrescription(""));
         table.addCell(valueCellPrescription(""));
 
         table.addCell(valueCellPrescription("OE"));
-        table.addCell(valueCellPrescription("+3,00"));
-        table.addCell(valueCellPrescription("-1,00"));
-        table.addCell(valueCellPrescription("90"));
-        table.addCell(valueCellPrescription("0,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOsSpherical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOsCylindrical().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOsAxis().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOsDnp().toString()));
         table.addCell(valueCellPrescription(""));
-        table.addCell(valueCellPrescription(""));
-        table.addCell(valueCellPrescription("3,00"));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.nearOsHeight().toString()));
+        table.addCell(valueCellPrescription(prescriptionPdfDTO.distanceOsAddition().toString()));
 
         document.add(table);
     }
 
-    private void addSectionHeader(Document document, ServiceOrderPdfDTO serviceOrderDTO, String sectionName) throws Exception {
+    private void addSectionHeader(Document document, ServiceOrderPdfDTO serviceOrderDTO, String sectionName)
+            throws Exception {
 
         // ---------- tabela interna (conteúdo do frame principal) ----------
         PdfPTable innerTable = new PdfPTable(1); // 1 coluna, cada row será uma sub-tabela
@@ -346,7 +366,7 @@ public class ServiceOrderPdfService {
         document.add(outerTable);
     }
 
-    private void addPaymentTable(Document document) throws Exception {
+    private void addPaymentTable(Document document, ServiceOrderPdfDTO sale) throws Exception {
 
         Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 8);
         Font valueFont = FontFactory.getFont(FontFactory.HELVETICA, 8);
@@ -357,74 +377,47 @@ public class ServiceOrderPdfService {
         mainTable.setSpacingBefore(8f);
         mainTable.setSpacingAfter(8f);
 
-        // =========================
-        // COLUNA 1
-        // =========================
-        PdfPTable col1 = createInstallmentColumn(headerFont, valueFont,
-                new String[][] {
-                        { "1/10", "10/03/2026", "R$ 232,00" },
-                        { "2/10", "10/04/2026", "R$ 232,00" },
-                        { "3/10", "10/05/2026", "R$ 232,00" },
-                        { "4/10", "10/06/2026", "R$ 232,00" },
-                        { "5/10", "10/07/2026", "R$ 232,00" }
+        List<PaymentInstallmentPdfDTO> installments = sale.payments().stream()
+                .flatMap(p -> p.installments().stream())
+                .sorted(Comparator.comparing(PaymentInstallmentPdfDTO::installmentNumber))
+                .toList();
 
-                });
+        int middle = (installments.size() + 1) / 2;
 
-        PdfPCell col1Cell = new PdfPCell(col1);
+        List<PaymentInstallmentPdfDTO> col1 = installments.subList(0, middle);
+        List<PaymentInstallmentPdfDTO> col2 = installments.subList(middle, installments.size());
+
+        PdfPCell col1Cell = new PdfPCell(createInstallmentColumn(headerFont, valueFont, col1, installments.size()));
         col1Cell.setBorderWidthLeft(1f);
         col1Cell.setBorderWidthRight(1f);
         col1Cell.setBorderWidthTop(1f);
         col1Cell.setBorderWidthBottom(1f);
 
-        mainTable.addCell(col1Cell);
-
-        // =========================
-        // COLUNA 2
-        // =========================
-        PdfPTable col2 = createInstallmentColumn(headerFont, valueFont,
-                new String[][] {
-                        { "6/10", "10/08/2026", "R$ 232,00" },
-                        { "7/10", "10/09/2026", "R$ 232,00" },
-                        { "8/10", "10/10/2026", "R$ 232,00" },
-                        { "9/10", "10/11/2026", "R$ 232,00" },
-                        { "10/10", "10/12/2026", "R$ 232,00" }
-                });
-
-        PdfPCell col2Cell = new PdfPCell(col2);
-        col2Cell.setBorderWidthLeft(0f); // evita duplicação
+        PdfPCell col2Cell = new PdfPCell(createInstallmentColumn(headerFont, valueFont, col2, installments.size()));
+        col2Cell.setBorderWidthLeft(0f);
         col2Cell.setBorderWidthRight(1f);
         col2Cell.setBorderWidthTop(1f);
         col2Cell.setBorderWidthBottom(1f);
 
+        mainTable.addCell(col1Cell);
         mainTable.addCell(col2Cell);
 
-        // =========================
-        // COLUNA 3 (FORMA PGTO)
-        // =========================
-        PdfPTable paymentTable = new PdfPTable(1);
-        paymentTable.setWidthPercentage(100);
+        PdfPCell paymentCell = new PdfPCell(createPaymentMethodColumn(headerFont, valueFont, sale));
+        paymentCell.setBorderWidthLeft(0f);
+        paymentCell.setBorderWidthRight(1f);
+        paymentCell.setBorderWidthTop(1f);
+        paymentCell.setBorderWidthBottom(1f);
 
-        paymentTable.addCell(horizontalCell("FORMA PGTO", headerFont));
-
-        paymentTable.addCell(horizontalCell("CIELO PARCELADO", valueFont));
-        paymentTable.addCell(horizontalCell("CIELO PARCELADO", valueFont));
-        paymentTable.addCell(horizontalCell("CIELO PARCELADO", valueFont));
-        paymentTable.addCell(horizontalCell("CIELO PARCELADO", valueFont));
-        paymentTable.addCell(horizontalCell("CIELO PARCELADO", valueFont));
-
-        PdfPCell col3Cell = new PdfPCell(paymentTable);
-        col3Cell.setBorderWidthLeft(0f);
-        col3Cell.setBorderWidthRight(1f);
-        col3Cell.setBorderWidthTop(1f);
-        col3Cell.setBorderWidthBottom(1f);
-
-        mainTable.addCell(col3Cell);
+        mainTable.addCell(paymentCell);
 
         document.add(mainTable);
     }
 
-    private PdfPTable createInstallmentColumn(Font headerFont, Font valueFont, String[][] data)
-            throws DocumentException {
+    private PdfPTable createInstallmentColumn(
+            Font headerFont,
+            Font valueFont,
+            List<PaymentInstallmentPdfDTO> installments,
+            int totalInstallments) throws DocumentException {
 
         PdfPTable table = new PdfPTable(3);
         table.setWidthPercentage(100);
@@ -434,13 +427,49 @@ public class ServiceOrderPdfService {
         table.addCell(horizontalCell("VENC.", headerFont));
         table.addCell(horizontalCell("VALOR", headerFont));
 
-        for (String[] row : data) {
-            table.addCell(horizontalCell(row[0], valueFont));
-            table.addCell(horizontalCell(row[1], valueFont));
-            table.addCell(horizontalCell(row[2], valueFont));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (PaymentInstallmentPdfDTO installment : installments) {
+
+            String number = installment.installmentNumber() + "/" + totalInstallments;
+            String dueDate = installment.dueDate().format(formatter);
+            String amount = "R$ " + installment.amount();
+
+            table.addCell(horizontalCell(number, valueFont));
+            table.addCell(horizontalCell(dueDate, valueFont));
+            table.addCell(horizontalCell(amount, valueFont));
         }
 
         return table;
+    }
+
+    private PdfPTable createPaymentMethodColumn(
+            Font headerFont,
+            Font valueFont,
+            ServiceOrderPdfDTO sale) throws DocumentException {
+
+        PdfPTable paymentTable = new PdfPTable(1);
+        paymentTable.setWidthPercentage(100);
+
+        paymentTable.addCell(horizontalCell("FORMA PGTO", headerFont));
+
+        for (PaymentPdfDTO payment : sale.payments()) {
+
+            String label;
+
+            if (payment.paymentMethod() == PaymentMethod.CREDIT_CARD) {
+
+                label = payment.cardBrand() + " PARCELADO";
+
+            } else {
+
+                label = payment.paymentMethod().name();
+            }
+
+            paymentTable.addCell(horizontalCell(label, valueFont));
+        }
+
+        return paymentTable;
     }
 
     private PdfPCell horizontalCell(String text, Font font) {
@@ -471,19 +500,20 @@ public class ServiceOrderPdfService {
     private void addProductsDescriptionTable(Document document, ServiceOrderPdfDTO serviceOrderDTO) throws Exception {
         Font smallFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
         Font smallBoldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9);
-        PdfPTable itemsTable = new PdfPTable(3);
+        PdfPTable itemsTable = new PdfPTable(4);
         itemsTable.setWidthPercentage(100);
         itemsTable.setSpacingBefore(1f);
         itemsTable.setSpacingAfter(8f);
-        itemsTable.setWidths(new float[] { 2, 4, 3 });
+        itemsTable.setWidths(new float[] { 2, 4, 2, 3 });
 
         itemsTable.addCell(noBorderCell("ID", smallBoldFont));
         itemsTable.addCell(noBorderCell("PRODUTO", smallBoldFont));
-        itemsTable.addCell(noBorderCell("VALOR", smallBoldFont));
+        itemsTable.addCell(noBorderCell("QUANTIDADE", smallBoldFont));
+        itemsTable.addCell(noBorderCell("VALOR UNITARIO", smallBoldFont));
 
         PdfPCell lineCell;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             lineCell = new PdfPCell(new Phrase(""));
             lineCell.setBorder(PdfPCell.BOTTOM);
             lineCell.setBorderWidthBottom(1.5f);
@@ -496,10 +526,12 @@ public class ServiceOrderPdfService {
 
             itemsTable.addCell(noBorderCell(item.productId().toString(), smallFont));
             itemsTable.addCell(noBorderCell(item.productName(), smallFont));
-            itemsTable.addCell(noBorderCell(String.format("R$ %.2f", item.price()), smallFont));
+            itemsTable.addCell(noBorderCell(item.quantity().toString(), smallFont));
+            itemsTable.addCell(noBorderCell(String.format("R$ %.2f", item.unitPrice()), smallFont));
 
         }
 
+        itemsTable.addCell(noBorderCell(""));
         itemsTable.addCell(noBorderCell(""));
         itemsTable.addCell(noBorderCell(""));
         itemsTable.addCell(noBorderCell(String.format("R$ %.2f", serviceOrderDTO.totalAmount()), smallBoldFont));
@@ -531,7 +563,7 @@ public class ServiceOrderPdfService {
             table.addCell(createGridCell(item.productId().toString(), normalFont));
             table.addCell(createGridCell(item.productName(), normalFont));
             table.addCell(createGridCell("descricao", normalFont));
-            table.addCell(createGridCell(String.valueOf("9"), normalFont));
+            table.addCell(createGridCell(item.quantity().toString(), normalFont));
         }
 
         // ===== LINHA OBS =====
@@ -581,25 +613,4 @@ public class ServiceOrderPdfService {
         cell.setBorder(PdfPCell.NO_BORDER);
         return cell;
     }
-
-    // private ServiceOrderPdfDTO buildDto(Sale sale) {
-
-    //     List<SaleItemPdfDTO> items = sale.getSaleItems()
-    //             .stream()
-    //             .map(item -> new SaleItemPdfDTO(
-    //                     item.getPrice(),
-    //                     item.getProduct().getId(),
-    //                     item.getProduct().getName()))
-    //             .toList();
-
-    //     return new ServiceOrderPdfDTO(
-    //             sale.getId(),
-    //             sale.getClient().getId(),
-    //             sale.getClient().getName(),
-    //             sale.getIssueDate(),
-    //             sale.getSaleStatus(),
-    //             sale.getEstimatedDeliveryDate(),
-    //             sale.getTotalAmount(),
-    //             items);
-    // }
 }

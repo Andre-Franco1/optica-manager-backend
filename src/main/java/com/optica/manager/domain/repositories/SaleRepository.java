@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.optica.manager.domain.entities.Sale;
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
 
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     
-    Page<Sale> findAllBySaleStatusAndUnitId(SaleStatus status,Pageable pageable, Integer unitId);
+    Page<Sale> findAllByDeliveryStatusAndUnitId(DeliveryStatus status,Pageable pageable, Integer unitId);
 }
