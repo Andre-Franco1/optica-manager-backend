@@ -57,7 +57,7 @@ public class PrescriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
 
         var ophthalmologist = ophthalmologistRepository.findById(prescriptionRequest.ophthalmologistId())
-                .orElseThrow(() -> new EntityNotFoundException("Oftalmologista não encontrado."));//TODO adicionar unit no oftalmo
+                .orElseThrow(() -> new EntityNotFoundException("Oftalmologista não encontrado."));
 
         var prescription = PrescriptionMapper.fromPrescriptionRequestDTO(prescriptionRequest);
         prescription.setClient(client);

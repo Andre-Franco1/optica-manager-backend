@@ -2,24 +2,23 @@ package com.optica.manager.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import com.optica.manager.domain.enums.CardBrand;
-import com.optica.manager.domain.enums.PaymentMethod;
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
+
+import jakarta.validation.constraints.NotNull;
 
 public record SaleRequest(
-        LocalDate issueDate,
+        LocalDateTime issueDate,
         LocalDate estimatedDeliveryDate,
         LocalDate deliveryDate,
-        BigDecimal totalAmount,
-        PaymentMethod paymentMethod,
-        CardBrand cardBrand,
-        Integer installments,
+        @NotNull BigDecimal discountPercentage,
         String comments,
-        SaleStatus saleStatus,
-        LongDTO client,
+        DeliveryStatus deliveryStatus,
+        Long clientId,
         Long prescriptionId,
-        List<SaleItemRequest> saleItems) {
+        List<SaleItemRequest> saleItems,
+        List<PaymentRequest> payments) {
 
 }

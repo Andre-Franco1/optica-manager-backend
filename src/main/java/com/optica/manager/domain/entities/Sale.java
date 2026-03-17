@@ -3,12 +3,12 @@ package com.optica.manager.domain.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.optica.manager.domain.enums.CardBrand;
-import com.optica.manager.domain.enums.PaymentMethod;
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
+import com.optica.manager.domain.enums.SalePaymentStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -30,24 +30,21 @@ public class Sale implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate issueDate;
+    private LocalDateTime issueDate;
     private LocalDate estimatedDeliveryDate;
     private LocalDate deliveryDate;
 
+    private BigDecimal subtotal;
+    private BigDecimal discountPercentage;
     private BigDecimal totalAmount;
-
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-
-    @Enumerated(EnumType.STRING)
-    private CardBrand cardBrand;
-
-    private Integer installments;
 
     private String comments;
 
     @Enumerated(EnumType.STRING)
-    private SaleStatus saleStatus;
+    private DeliveryStatus deliveryStatus;
+
+    @Enumerated(EnumType.STRING)
+    private SalePaymentStatus salePaymentStatus;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -68,6 +65,28 @@ public class Sale implements Serializable {
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
     private List<SaleItem> saleItems = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
+
+    public Sale() {
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
+
     public Long getId() {
         return id;
     }
@@ -76,11 +95,11 @@ public class Sale implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getIssueDate() {
+    public LocalDateTime getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(LocalDate issueDate) {
+    public void setIssueDate(LocalDateTime issueDate) {
         this.issueDate = issueDate;
     }
 
@@ -108,28 +127,12 @@ public class Sale implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
+    public BigDecimal getDiscountPercentage() {
+        return discountPercentage;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public CardBrand getCardBrand() {
-        return cardBrand;
-    }
-
-    public void setCardBrand(CardBrand cardBrand) {
-        this.cardBrand = cardBrand;
-    }
-
-    public Integer getInstallments() {
-        return installments;
-    }
-
-    public void setInstallments(Integer installments) {
-        this.installments = installments;
+    public void setDiscountPercentage(BigDecimal discountPercentage) {
+        this.discountPercentage = discountPercentage;
     }
 
     public String getComments() {
@@ -140,12 +143,12 @@ public class Sale implements Serializable {
         this.comments = comments;
     }
 
-    public SaleStatus getSaleStatus() {
-        return saleStatus;
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
     }
 
-    public void setSaleStatus(SaleStatus saleStatus) {
-        this.saleStatus = saleStatus;
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 
     public Client getClient() {
@@ -193,6 +196,14 @@ public class Sale implements Serializable {
         this.unit = unit;
     }
 
+    public SalePaymentStatus getSalePaymentStatus() {
+        return salePaymentStatus;
+    }
+
+    public void setSalePaymentStatus(SalePaymentStatus salePaymentStatus) {
+        this.salePaymentStatus = salePaymentStatus;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -221,9 +232,8 @@ public class Sale implements Serializable {
     @Override
     public String toString() {
         return "Sale [id=" + id + ", issueDate=" + issueDate + ", estimatedDeliveryDate=" + estimatedDeliveryDate
-                + ", deliveryDate=" + deliveryDate + ", totalAmount=" + totalAmount + ", paymentMethod=" + paymentMethod
-                + ", cardBrand=" + cardBrand + ", installments=" + installments + ", comments=" + comments
-                + ", saleStatus=" + saleStatus + "]";
+                + ", deliveryDate=" + deliveryDate + ", totalAmount=" + totalAmount + ", comments=" + comments
+                + ", deliveryStatus=" + deliveryStatus + "]";
     }
 
 }

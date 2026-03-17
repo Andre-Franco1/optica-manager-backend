@@ -1,5 +1,10 @@
 package com.optica.manager.domain.services;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,17 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.optica.manager.domain.entities.Frame;
-import com.optica.manager.domain.entities.Product;
 import com.optica.manager.domain.entities.Sale;
 import com.optica.manager.domain.entities.SaleItem;
 import com.optica.manager.domain.entities.User;
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
 import com.optica.manager.domain.mappers.SaleMapper;
-import com.optica.manager.domain.repositories.ProductRepository;
 import com.optica.manager.domain.repositories.SaleRepository;
-import com.optica.manager.domain.services.exceptions.BusinessException;
-import com.optica.manager.domain.services.usecases.sale.CreateSaleValidator;
-import com.optica.manager.dto.SaleItemRequest;
+import com.optica.manager.domain.services.validators.SaleValidator;
 import com.optica.manager.dto.SaleRequest;
 import com.optica.manager.dto.SaleResponse;
 
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SaleService {
 
     @Autowired
-    private CreateSaleValidator createSaleUseCase;
+    private SaleValidator createSaleUseCase;
 
     @Autowired
     private StockMovementService stockMovementService;
@@ -37,16 +38,19 @@ public class SaleService {
     private SaleRepository saleRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private SaleItemService saleItemService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private TenantService tenantService;
 
     @Transactional(readOnly = true)
-    public Page<SaleResponse> findSales(int page, int size, SaleStatus status) {
+    public Page<SaleResponse> findSales(int page, int size, DeliveryStatus status) {
         var pageRequest = PageRequest.of(page, size);
         Integer unitId = tenantService.getUnitId();
-        var pageSale = saleRepository.findAllBySaleStatusAndUnitId(status, pageRequest, unitId);
+        var pageSale = saleRepository.findAllByDeliveryStatusAndUnitId(status, pageRequest, unitId);
         return pageSale.map(s -> SaleMapper.toSaleResponseDTO(s));
     }
 
@@ -54,38 +58,45 @@ public class SaleService {
     public SaleResponse createSale(SaleRequest saleRequest) {
 
         Sale sale = SaleMapper.fromSaleRequestDTO(saleRequest);
-
         User user = tenantService.getAuthenticatedUser();
 
         sale.setUser(user);
         sale.setUnit(user.getUnit());
 
-        createSaleUseCase.validateSale(sale);
+        sale.setIssueDate(LocalDateTime.now());
+        
+        saleItemService.attachProductsInSaleItems(sale, saleRequest);
+        sale.setSubtotal(calculateSubtotalValue(sale.getSaleItems()));
+        sale.setTotalAmount(calculateDiscountedSubtotal(sale.getSubtotal(), sale.getDiscountPercentage()));
+        
+        paymentService.processPayments(sale, saleRequest.payments());
 
-        setProductInSaleItem(sale, saleRequest);
-        createSaleUseCase.validateSaleItemHasProduct(sale.getSaleItems());
+        createSaleUseCase.validateSale(sale);
 
         saleRepository.save(sale);
 
         for (SaleItem saleItem : sale.getSaleItems()) {
             if (saleItem.getProduct() instanceof Frame frame) {
-                stockMovementService.decreaseStockInSale(frame, 1, sale); // TODO change quantity value when sale items
-                                                                          // accept quantity too
+                stockMovementService.decreaseStockInSale(frame, saleItem.getQuantity(), sale);
             }
         }
         return SaleMapper.toSaleResponseDTO(sale);
     }
 
-    private void setProductInSaleItem(Sale sale, SaleRequest saleRequest) {
-        for (int i = 0; i < sale.getSaleItems().size(); i++) {
-            SaleItem saleItem = sale.getSaleItems().get(i);
-            SaleItemRequest saleItemReq = saleRequest.saleItems().get(i);
+    private BigDecimal calculateSubtotalValue(List<SaleItem> saleItems) {
+        BigDecimal subtotal = BigDecimal.ZERO;
 
-            Product product = productRepository.findById(saleItemReq.product().id())
-                    .orElseThrow(() -> new BusinessException("Produto não encontrado"));
-
-            saleItem.setProduct(product);
+        for (SaleItem saleItem : saleItems) {
+            subtotal = subtotal.add(saleItem.getSubtotal());
         }
+        return subtotal;
     }
-    
+
+    private BigDecimal calculateDiscountedSubtotal(BigDecimal subtotal, BigDecimal discountPercentage) {
+        BigDecimal discountAmount = subtotal.multiply(
+                discountPercentage.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP));
+
+        return subtotal.subtract(discountAmount);
+    }
+
 }

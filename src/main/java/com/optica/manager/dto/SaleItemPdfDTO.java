@@ -3,8 +3,10 @@ package com.optica.manager.dto;
 import java.math.BigDecimal;
 
 public record SaleItemPdfDTO (
-    BigDecimal price,
+    BigDecimal unitPrice,
     Long productId,
-    String productName){
+    String productName,
+    Integer quantity,
+    BigDecimal subtotal){
     
 }

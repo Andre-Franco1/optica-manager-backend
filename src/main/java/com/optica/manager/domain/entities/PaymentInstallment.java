@@ -1,42 +1,35 @@
 package com.optica.manager.domain.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "products")
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Product {
+@Table(name = "payment_installments")
+public class PaymentInstallment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code;
-    private String name;
+    private Integer installmentNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;
+    private LocalDate dueDate;
 
-    public Product() {
-    }
+    private BigDecimal amount;
 
-    public Product(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
-    public Product(String code, String name) {
-        this.code = code;
-        this.name = name;
+    public PaymentInstallment() {
     }
 
     public Long getId() {
@@ -47,28 +40,36 @@ public abstract class Product {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public Integer getInstallmentNumber() {
+        return installmentNumber;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setInstallmentNumber(Integer installmentNumber) {
+        this.installmentNumber = installmentNumber;
     }
 
-    public String getName() {
-        return name;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
-    public Unit getUnit() {
-        return unit;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     @Override
@@ -87,18 +88,13 @@ public abstract class Product {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Product other = (Product) obj;
+        PaymentInstallment other = (PaymentInstallment) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Product [id=" + id + ", code=" + code + ", name=" + name + "]";
     }
 
 }

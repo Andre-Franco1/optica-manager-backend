@@ -1,6 +1,7 @@
 package com.optica.manager.domain.mappers;
 
 import com.optica.manager.domain.entities.Prescription;
+import com.optica.manager.dto.PrescriptionPdfDTO;
 import com.optica.manager.dto.PrescriptionRequest;
 import com.optica.manager.dto.PrescriptionResponse;
 
@@ -69,4 +70,36 @@ public class PrescriptionMapper {
                 prescriptionRequest.notes());
 
     }
+
+
+    public static PrescriptionPdfDTO toPrescriptionPdfDTO(Prescription prescription) {
+
+        PrescriptionPdfDTO prescriptionPdfDTO = new PrescriptionPdfDTO(
+                prescription.getOphthalmologist().getName(),
+                prescription.getDistanceOdSpherical(),
+                prescription.getDistanceOdCylindrical(),
+                prescription.getDistanceOdAxis(),
+                prescription.getDistanceOdDnp(),
+                prescription.getDistanceOdAddition(),
+                prescription.getDistanceOsSpherical(),
+                prescription.getDistanceOsCylindrical(),
+                prescription.getDistanceOsAxis(),
+                prescription.getDistanceOsDnp(),
+                prescription.getDistanceOsAddition(),
+                prescription.getDistanceDp(),
+                prescription.getNearOdSpherical(),
+                prescription.getNearOdCylindrical(),
+                prescription.getNearOdAxis(),
+                prescription.getNearOdDnp(),
+                prescription.getNearOdHeight(),
+                prescription.getNearOsSpherical(),
+                prescription.getNearOsCylindrical(),
+                prescription.getNearOsAxis(),
+                prescription.getNearOsDnp(),
+                prescription.getNearOsHeight(),
+                prescription.getNearDp()
+                );
+        return prescriptionPdfDTO;
+    }
+
 }

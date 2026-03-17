@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
 import com.optica.manager.domain.services.SaleService;
 import com.optica.manager.dto.SaleRequest;
 import com.optica.manager.dto.SaleResponse;
@@ -28,7 +28,7 @@ public class SaleController {
     public ResponseEntity<Page<SaleResponse>> getSales(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "status") SaleStatus status) {
+            @RequestParam(name = "status") DeliveryStatus status) {
             
         return ResponseEntity.ok(saleService.findSales(page, size, status));
     }

@@ -2,27 +2,30 @@ package com.optica.manager.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import com.optica.manager.domain.enums.CardBrand;
-import com.optica.manager.domain.enums.PaymentMethod;
-import com.optica.manager.domain.enums.SaleStatus;
+import com.optica.manager.domain.enums.DeliveryStatus;
+import com.optica.manager.domain.enums.SalePaymentStatus;
 
 public record SaleResponse(
         long id,
-        LocalDate issueDate,
+        LocalDateTime issueDate,
         LocalDate estimatedDeliveryDate,
         LocalDate deliveryDate,
+        BigDecimal subtotal,
+        BigDecimal discountPercentage,
         BigDecimal totalAmount,
-        PaymentMethod paymentMethod,
-        CardBrand cardBrand,
-        Integer installments,
+        BigDecimal paidAmount,
+        BigDecimal remainingAmount,
+        SalePaymentStatus salePaymentStatus,
         String comments,
-        SaleStatus saleStatus,
+        DeliveryStatus deliveryStatus,
         Long clientId,
         String clientCpf,
         String clientName,
-        // userName
-        List<SaleItemResponse> saleItems) {
+        String userName,
+        List<SaleItemResponse> saleItems,
+        List<PaymentResponse> payments) {
 
 }
