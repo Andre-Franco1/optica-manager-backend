@@ -2,6 +2,7 @@ package com.optica.manager.domain.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class PaymentService {
 
             Payment payment = PaymentMapper.fromPaymentRequestDTO(paymentRequest);
             payment.setSale(sale);
+            payment.setPaymentDate(LocalDate.now());
             paymentValidator.validatePayment(payment);
             generateInstallments(payment);
             sale.getPayments().add(payment);

@@ -7,13 +7,11 @@ import java.util.List;
 
 import com.optica.manager.domain.enums.DeliveryStatus;
 
-import jakarta.validation.constraints.NotNull;
-
 public record SaleRequest(
         LocalDateTime issueDate,
         LocalDate estimatedDeliveryDate,
         LocalDate deliveryDate,
-        @NotNull BigDecimal discountPercentage,
+        BigDecimal discountPercentage,
         String comments,
         DeliveryStatus deliveryStatus,
         Long clientId,

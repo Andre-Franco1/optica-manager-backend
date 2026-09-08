@@ -17,8 +17,6 @@ public record PaymentRequest(
         BigDecimal amount,
         
         Integer installments,
-
-        @NotNull
         LocalDate paymentDate,
 
         @NotNull

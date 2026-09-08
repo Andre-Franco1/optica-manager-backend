@@ -65,6 +65,10 @@ public class SaleService {
 
         sale.setIssueDate(LocalDateTime.now());
         
+        if (sale.getDiscountPercentage() == null) {
+            sale.setDiscountPercentage(BigDecimal.ZERO);
+        }
+
         saleItemService.attachProductsInSaleItems(sale, saleRequest);
         sale.setSubtotal(calculateSubtotalValue(sale.getSaleItems()));
         sale.setTotalAmount(calculateDiscountedSubtotal(sale.getSubtotal(), sale.getDiscountPercentage()));
